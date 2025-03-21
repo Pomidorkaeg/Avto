@@ -1,37 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Player } from '../../types/player';
+import { usePlayers } from '../../hooks/useData';
 
 const PlayerManagement: React.FC = () => {
-  const [players, setPlayers] = useState<Player[]>([]);
+  const { players, addPlayer, updatePlayer, deletePlayer } = usePlayers();
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Загрузка игроков при монтировании компонента
-  useEffect(() => {
-    const savedPlayers = localStorage.getItem('players');
-    if (savedPlayers) {
-      setPlayers(JSON.parse(savedPlayers));
-    }
-  }, []);
-
-  // Сохранение игроков при каждом изменении
-  useEffect(() => {
-    localStorage.setItem('players', JSON.stringify(players));
-  }, [players]);
-
   const handleSave = (player: Player) => {
-    const updatedPlayers = editingPlayer
-      ? players.map(p => p.id === player.id ? player : p)
-      : [...players, { ...player, id: Date.now().toString() }];
-    
-    setPlayers(updatedPlayers);
+    if (editingPlayer) {
+      updatePlayer(player);
+    } else {
+      addPlayer(player);
+    }
     setIsModalOpen(false);
     setEditingPlayer(null);
   };
 
   const handleDelete = (id: string) => {
-    const updatedPlayers = players.filter(p => p.id !== id);
-    setPlayers(updatedPlayers);
+    deletePlayer(id);
   };
 
   return (

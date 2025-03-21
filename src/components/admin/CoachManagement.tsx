@@ -1,37 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Coach } from '../../types/coach';
+import { useCoaches } from '../../hooks/useData';
 
 const CoachManagement: React.FC = () => {
-  const [coaches, setCoaches] = useState<Coach[]>([]);
+  const { coaches, addCoach, updateCoach, deleteCoach } = useCoaches();
   const [editingCoach, setEditingCoach] = useState<Coach | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Загрузка тренеров при монтировании компонента
-  useEffect(() => {
-    const savedCoaches = localStorage.getItem('coaches');
-    if (savedCoaches) {
-      setCoaches(JSON.parse(savedCoaches));
-    }
-  }, []);
-
-  // Сохранение тренеров при каждом изменении
-  useEffect(() => {
-    localStorage.setItem('coaches', JSON.stringify(coaches));
-  }, [coaches]);
-
   const handleSave = (coach: Coach) => {
-    const updatedCoaches = editingCoach
-      ? coaches.map(c => c.id === coach.id ? coach : c)
-      : [...coaches, { ...coach, id: Date.now().toString() }];
-    
-    setCoaches(updatedCoaches);
+    if (editingCoach) {
+      updateCoach(coach);
+    } else {
+      addCoach(coach);
+    }
     setIsModalOpen(false);
     setEditingCoach(null);
   };
 
   const handleDelete = (id: string) => {
-    const updatedCoaches = coaches.filter(c => c.id !== id);
-    setCoaches(updatedCoaches);
+    deleteCoach(id);
   };
 
   return (
