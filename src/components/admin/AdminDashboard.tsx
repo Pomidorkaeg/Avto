@@ -1,9 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PlayerManagement from './PlayerManagement';
 import CoachManagement from './CoachManagement';
 
 const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<'players' | 'coaches'>('players');
+  const [lastLogin, setLastLogin] = useState<string>('');
+
+  useEffect(() => {
+    const lastLoginTime = localStorage.getItem('adminLastLogin');
+    if (lastLoginTime) {
+      const date = new Date(lastLoginTime);
+      setLastLogin(date.toLocaleString());
+    }
+  }, []);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -35,6 +44,11 @@ const AdminDashboard: React.FC = () => {
                 >
                   Тренеры
                 </button>
+              </div>
+            </div>
+            <div className="flex items-center">
+              <div className="text-sm text-gray-500">
+                Последний вход: {lastLogin}
               </div>
             </div>
           </div>

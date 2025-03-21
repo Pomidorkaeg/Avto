@@ -11,7 +11,7 @@ const AdminLogin: React.FC = () => {
     // Проверяем, авторизован ли пользователь
     const isAdmin = localStorage.getItem('isAdmin') === 'true';
     if (isAdmin) {
-      navigate('#/admin/dashboard');
+      navigate('/admin/dashboard');
     }
   }, [navigate]);
 
@@ -21,7 +21,9 @@ const AdminLogin: React.FC = () => {
     
     if (username === 'admin' && password === 'admin123') {
       localStorage.setItem('isAdmin', 'true');
-      navigate('#/admin/dashboard');
+      localStorage.setItem('adminUsername', username);
+      localStorage.setItem('adminLastLogin', new Date().toISOString());
+      navigate('/admin/dashboard');
     } else {
       setError('Неверные учетные данные');
     }
