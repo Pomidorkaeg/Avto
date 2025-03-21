@@ -8,17 +8,27 @@ const CoachManagement: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSave = (coach: Coach) => {
-    if (editingCoach) {
-      updateCoach(coach);
-    } else {
-      addCoach(coach);
+    try {
+      if (editingCoach) {
+        updateCoach(coach);
+      } else {
+        addCoach(coach);
+      }
+      setIsModalOpen(false);
+      setEditingCoach(null);
+    } catch (error) {
+      console.error('Ошибка при сохранении тренера:', error);
+      alert('Произошла ошибка при сохранении данных. Пожалуйста, попробуйте еще раз.');
     }
-    setIsModalOpen(false);
-    setEditingCoach(null);
   };
 
   const handleDelete = (id: string) => {
-    deleteCoach(id);
+    try {
+      deleteCoach(id);
+    } catch (error) {
+      console.error('Ошибка при удалении тренера:', error);
+      alert('Произошла ошибка при удалении данных. Пожалуйста, попробуйте еще раз.');
+    }
   };
 
   return (

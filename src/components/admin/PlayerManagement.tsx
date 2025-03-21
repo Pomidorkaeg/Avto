@@ -8,17 +8,27 @@ const PlayerManagement: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleSave = (player: Player) => {
-    if (editingPlayer) {
-      updatePlayer(player);
-    } else {
-      addPlayer(player);
+    try {
+      if (editingPlayer) {
+        updatePlayer(player);
+      } else {
+        addPlayer(player);
+      }
+      setIsModalOpen(false);
+      setEditingPlayer(null);
+    } catch (error) {
+      console.error('Ошибка при сохранении игрока:', error);
+      alert('Произошла ошибка при сохранении данных. Пожалуйста, попробуйте еще раз.');
     }
-    setIsModalOpen(false);
-    setEditingPlayer(null);
   };
 
   const handleDelete = (id: string) => {
-    deletePlayer(id);
+    try {
+      deletePlayer(id);
+    } catch (error) {
+      console.error('Ошибка при удалении игрока:', error);
+      alert('Произошла ошибка при удалении данных. Пожалуйста, попробуйте еще раз.');
+    }
   };
 
   return (
