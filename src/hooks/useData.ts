@@ -7,6 +7,12 @@ const STORAGE_KEYS = {
   COACHES: 'coaches',
 } as const;
 
+// Создаем кастомные события для синхронизации
+const EVENTS = {
+  PLAYERS_UPDATED: 'playersUpdated',
+  COACHES_UPDATED: 'coachesUpdated',
+} as const;
+
 export const usePlayers = () => {
   const [players, setPlayers] = useState<Player[]>(() => {
     try {
@@ -21,10 +27,22 @@ export const usePlayers = () => {
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEYS.PLAYERS, JSON.stringify(players));
+      // Отправляем кастомное событие
+      window.dispatchEvent(new CustomEvent(EVENTS.PLAYERS_UPDATED, { detail: players }));
     } catch (error) {
       console.error('Ошибка при сохранении игроков:', error);
     }
   }, [players]);
+
+  // Слушаем обновления от других компонентов
+  useEffect(() => {
+    const handlePlayersUpdate = (e: CustomEvent) => {
+      setPlayers(e.detail);
+    };
+
+    window.addEventListener(EVENTS.PLAYERS_UPDATED, handlePlayersUpdate as EventListener);
+    return () => window.removeEventListener(EVENTS.PLAYERS_UPDATED, handlePlayersUpdate as EventListener);
+  }, []);
 
   const addPlayer = (player: Omit<Player, 'id'>) => {
     try {
@@ -86,10 +104,22 @@ export const useCoaches = () => {
   useEffect(() => {
     try {
       localStorage.setItem(STORAGE_KEYS.COACHES, JSON.stringify(coaches));
+      // Отправляем кастомное событие
+      window.dispatchEvent(new CustomEvent(EVENTS.COACHES_UPDATED, { detail: coaches }));
     } catch (error) {
       console.error('Ошибка при сохранении тренеров:', error);
     }
   }, [coaches]);
+
+  // Слушаем обновления от других компонентов
+  useEffect(() => {
+    const handleCoachesUpdate = (e: CustomEvent) => {
+      setCoaches(e.detail);
+    };
+
+    window.addEventListener(EVENTS.COACHES_UPDATED, handleCoachesUpdate as EventListener);
+    return () => window.removeEventListener(EVENTS.COACHES_UPDATED, handleCoachesUpdate as EventListener);
+  }, []);
 
   const addCoach = (coach: Omit<Coach, 'id'>) => {
     try {

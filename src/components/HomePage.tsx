@@ -1,22 +1,29 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePlayers } from '../hooks/useData';
 import { useCoaches } from '../hooks/useData';
 
 const HomePage: React.FC = () => {
-  const { players } = usePlayers();
-  const { coaches } = useCoaches();
+  const { players: initialPlayers } = usePlayers();
+  const { coaches: initialCoaches } = useCoaches();
+  const [players, setPlayers] = useState(initialPlayers);
+  const [coaches, setCoaches] = useState(initialCoaches);
 
-  // Добавляем эффект для отслеживания изменений
   useEffect(() => {
-    // Принудительное обновление компонента при изменении данных
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === 'players' || e.key === 'coaches') {
-        window.location.reload();
-      }
+    const handlePlayersUpdate = (e: CustomEvent) => {
+      setPlayers(e.detail);
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    const handleCoachesUpdate = (e: CustomEvent) => {
+      setCoaches(e.detail);
+    };
+
+    window.addEventListener('playersUpdated', handlePlayersUpdate as EventListener);
+    window.addEventListener('coachesUpdated', handleCoachesUpdate as EventListener);
+
+    return () => {
+      window.removeEventListener('playersUpdated', handlePlayersUpdate as EventListener);
+      window.removeEventListener('coachesUpdated', handleCoachesUpdate as EventListener);
+    };
   }, []);
 
   return (
