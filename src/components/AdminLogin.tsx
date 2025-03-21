@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const AdminLogin: React.FC = () => {
@@ -7,10 +7,18 @@ const AdminLogin: React.FC = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  useEffect(() => {
+    // Проверяем, авторизован ли пользователь
+    const isAdmin = localStorage.getItem('isAdmin') === 'true';
+    if (isAdmin) {
+      navigate('/admin/dashboard');
+    }
+  }, [navigate]);
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     
-    // Здесь будет проверка учетных данных
     if (username === 'admin' && password === 'admin123') {
       localStorage.setItem('isAdmin', 'true');
       navigate('/admin/dashboard');
