@@ -1,11 +1,23 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useEffect } from 'react';
 import { usePlayers } from '../hooks/useData';
 import { useCoaches } from '../hooks/useData';
 
 const HomePage: React.FC = () => {
   const { players } = usePlayers();
   const { coaches } = useCoaches();
+
+  // Добавляем эффект для отслеживания изменений
+  useEffect(() => {
+    // Принудительное обновление компонента при изменении данных
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'players' || e.key === 'coaches') {
+        window.location.reload();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
 
   return (
     <div className="container mx-auto px-4 py-8">
