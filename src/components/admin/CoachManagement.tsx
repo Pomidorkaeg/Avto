@@ -6,13 +6,18 @@ const CoachManagement: React.FC = () => {
   const [editingCoach, setEditingCoach] = useState<Coach | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Загрузка тренеров при монтировании компонента
   useEffect(() => {
-    // Загрузка тренеров из localStorage
     const savedCoaches = localStorage.getItem('coaches');
     if (savedCoaches) {
       setCoaches(JSON.parse(savedCoaches));
     }
   }, []);
+
+  // Сохранение тренеров при каждом изменении
+  useEffect(() => {
+    localStorage.setItem('coaches', JSON.stringify(coaches));
+  }, [coaches]);
 
   const handleSave = (coach: Coach) => {
     const updatedCoaches = editingCoach
@@ -20,7 +25,6 @@ const CoachManagement: React.FC = () => {
       : [...coaches, { ...coach, id: Date.now().toString() }];
     
     setCoaches(updatedCoaches);
-    localStorage.setItem('coaches', JSON.stringify(updatedCoaches));
     setIsModalOpen(false);
     setEditingCoach(null);
   };
@@ -28,7 +32,6 @@ const CoachManagement: React.FC = () => {
   const handleDelete = (id: string) => {
     const updatedCoaches = coaches.filter(c => c.id !== id);
     setCoaches(updatedCoaches);
-    localStorage.setItem('coaches', JSON.stringify(updatedCoaches));
   };
 
   return (
@@ -56,7 +59,6 @@ const CoachManagement: React.FC = () => {
             />
             <h3 className="text-xl font-semibold">{coach.name}</h3>
             <p>{coach.position}</p>
-            <p>Опыт: {coach.experience} лет</p>
             <div className="mt-4 flex space-x-2">
               <button
                 onClick={() => {
@@ -104,7 +106,7 @@ const CoachManagement: React.FC = () => {
                   vk: formData.get('vk') as string,
                 },
                 isActive: formData.get('isActive') === 'true',
-                createdAt: new Date().toISOString(),
+                createdAt: editingCoach?.createdAt || new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
               };
               handleSave(coach);
@@ -141,21 +143,21 @@ const CoachManagement: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block mb-1">Опыт (лет)</label>
-                  <input
-                    type="number"
-                    name="experience"
-                    defaultValue={editingCoach?.experience}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
                   <label className="block mb-1">Национальность</label>
                   <input
                     type="text"
                     name="nationality"
                     defaultValue={editingCoach?.nationality}
+                    className="w-full border rounded p-2"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1">Опыт (лет)</label>
+                  <input
+                    type="number"
+                    name="experience"
+                    defaultValue={editingCoach?.experience}
                     className="w-full border rounded p-2"
                     required
                   />

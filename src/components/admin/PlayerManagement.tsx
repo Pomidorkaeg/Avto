@@ -6,13 +6,18 @@ const PlayerManagement: React.FC = () => {
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  // Загрузка игроков при монтировании компонента
   useEffect(() => {
-    // Загрузка игроков из localStorage
     const savedPlayers = localStorage.getItem('players');
     if (savedPlayers) {
       setPlayers(JSON.parse(savedPlayers));
     }
   }, []);
+
+  // Сохранение игроков при каждом изменении
+  useEffect(() => {
+    localStorage.setItem('players', JSON.stringify(players));
+  }, [players]);
 
   const handleSave = (player: Player) => {
     const updatedPlayers = editingPlayer
@@ -20,7 +25,6 @@ const PlayerManagement: React.FC = () => {
       : [...players, { ...player, id: Date.now().toString() }];
     
     setPlayers(updatedPlayers);
-    localStorage.setItem('players', JSON.stringify(updatedPlayers));
     setIsModalOpen(false);
     setEditingPlayer(null);
   };
@@ -28,7 +32,6 @@ const PlayerManagement: React.FC = () => {
   const handleDelete = (id: string) => {
     const updatedPlayers = players.filter(p => p.id !== id);
     setPlayers(updatedPlayers);
-    localStorage.setItem('players', JSON.stringify(updatedPlayers));
   };
 
   return (
@@ -107,9 +110,11 @@ const PlayerManagement: React.FC = () => {
                   games: parseInt(formData.get('games') as string),
                   goals: parseInt(formData.get('goals') as string),
                   assists: parseInt(formData.get('assists') as string),
+                  yellowCards: parseInt(formData.get('yellowCards') as string) || 0,
+                  redCards: parseInt(formData.get('redCards') as string) || 0,
                 },
                 isActive: formData.get('isActive') === 'true',
-                createdAt: new Date().toISOString(),
+                createdAt: editingPlayer?.createdAt || new Date().toISOString(),
                 updatedAt: new Date().toISOString(),
               };
               handleSave(player);
@@ -276,6 +281,26 @@ const PlayerManagement: React.FC = () => {
                     type="number"
                     name="assists"
                     defaultValue={editingPlayer?.stats.assists}
+                    className="w-full border rounded p-2"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1">Желтые карточки</label>
+                  <input
+                    type="number"
+                    name="yellowCards"
+                    defaultValue={editingPlayer?.stats.yellowCards}
+                    className="w-full border rounded p-2"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1">Красные карточки</label>
+                  <input
+                    type="number"
+                    name="redCards"
+                    defaultValue={editingPlayer?.stats.redCards}
                     className="w-full border rounded p-2"
                     required
                   />
