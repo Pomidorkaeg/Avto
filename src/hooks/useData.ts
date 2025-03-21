@@ -13,26 +13,30 @@ const EVENTS = {
   COACHES_UPDATED: 'coachesUpdated',
 } as const;
 
-export const usePlayers = () => {
-  const [players, setPlayers] = useState<Player[]>(() => {
-    try {
-      const savedPlayers = localStorage.getItem(STORAGE_KEYS.PLAYERS);
-      return savedPlayers ? JSON.parse(savedPlayers) : [];
-    } catch (error) {
-      console.error('Ошибка при загрузке игроков:', error);
-      return [];
-    }
-  });
+// Функция для загрузки данных из localStorage
+const loadFromStorage = <T>(key: string): T[] => {
+  try {
+    const saved = localStorage.getItem(key);
+    return saved ? JSON.parse(saved) : [];
+  } catch (error) {
+    console.error(`Ошибка при загрузке ${key}:`, error);
+    return [];
+  }
+};
 
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.PLAYERS, JSON.stringify(players));
-      // Отправляем кастомное событие
-      window.dispatchEvent(new CustomEvent(EVENTS.PLAYERS_UPDATED, { detail: players }));
-    } catch (error) {
-      console.error('Ошибка при сохранении игроков:', error);
-    }
-  }, [players]);
+// Функция для сохранения данных в localStorage
+const saveToStorage = <T>(key: string, data: T[]): void => {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+    // Отправляем кастомное событие
+    window.dispatchEvent(new CustomEvent(key + 'Updated', { detail: data }));
+  } catch (error) {
+    console.error(`Ошибка при сохранении ${key}:`, error);
+  }
+};
+
+export const usePlayers = () => {
+  const [players, setPlayers] = useState<Player[]>(() => loadFromStorage(STORAGE_KEYS.PLAYERS));
 
   // Слушаем обновления от других компонентов
   useEffect(() => {
@@ -44,42 +48,32 @@ export const usePlayers = () => {
     return () => window.removeEventListener(EVENTS.PLAYERS_UPDATED, handlePlayersUpdate as EventListener);
   }, []);
 
+  // Сохраняем изменения в localStorage
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.PLAYERS, players);
+  }, [players]);
+
   const addPlayer = (player: Omit<Player, 'id'>) => {
-    try {
-      const newPlayer = { 
-        ...player, 
-        id: Date.now().toString(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      setPlayers(prev => [...prev, newPlayer]);
-      return newPlayer;
-    } catch (error) {
-      console.error('Ошибка при добавлении игрока:', error);
-      throw error;
-    }
+    const newPlayer = { 
+      ...player, 
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    setPlayers(prev => [...prev, newPlayer]);
+    return newPlayer;
   };
 
   const updatePlayer = (player: Player) => {
-    try {
-      const updatedPlayer = {
-        ...player,
-        updatedAt: new Date().toISOString()
-      };
-      setPlayers(prev => prev.map(p => p.id === player.id ? updatedPlayer : p));
-    } catch (error) {
-      console.error('Ошибка при обновлении игрока:', error);
-      throw error;
-    }
+    const updatedPlayer = {
+      ...player,
+      updatedAt: new Date().toISOString()
+    };
+    setPlayers(prev => prev.map(p => p.id === player.id ? updatedPlayer : p));
   };
 
   const deletePlayer = (id: string) => {
-    try {
-      setPlayers(prev => prev.filter(p => p.id !== id));
-    } catch (error) {
-      console.error('Ошибка при удалении игрока:', error);
-      throw error;
-    }
+    setPlayers(prev => prev.filter(p => p.id !== id));
   };
 
   return {
@@ -91,25 +85,7 @@ export const usePlayers = () => {
 };
 
 export const useCoaches = () => {
-  const [coaches, setCoaches] = useState<Coach[]>(() => {
-    try {
-      const savedCoaches = localStorage.getItem(STORAGE_KEYS.COACHES);
-      return savedCoaches ? JSON.parse(savedCoaches) : [];
-    } catch (error) {
-      console.error('Ошибка при загрузке тренеров:', error);
-      return [];
-    }
-  });
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(STORAGE_KEYS.COACHES, JSON.stringify(coaches));
-      // Отправляем кастомное событие
-      window.dispatchEvent(new CustomEvent(EVENTS.COACHES_UPDATED, { detail: coaches }));
-    } catch (error) {
-      console.error('Ошибка при сохранении тренеров:', error);
-    }
-  }, [coaches]);
+  const [coaches, setCoaches] = useState<Coach[]>(() => loadFromStorage(STORAGE_KEYS.COACHES));
 
   // Слушаем обновления от других компонентов
   useEffect(() => {
@@ -121,42 +97,32 @@ export const useCoaches = () => {
     return () => window.removeEventListener(EVENTS.COACHES_UPDATED, handleCoachesUpdate as EventListener);
   }, []);
 
+  // Сохраняем изменения в localStorage
+  useEffect(() => {
+    saveToStorage(STORAGE_KEYS.COACHES, coaches);
+  }, [coaches]);
+
   const addCoach = (coach: Omit<Coach, 'id'>) => {
-    try {
-      const newCoach = { 
-        ...coach, 
-        id: Date.now().toString(),
-        createdAt: new Date().toISOString(),
-        updatedAt: new Date().toISOString()
-      };
-      setCoaches(prev => [...prev, newCoach]);
-      return newCoach;
-    } catch (error) {
-      console.error('Ошибка при добавлении тренера:', error);
-      throw error;
-    }
+    const newCoach = { 
+      ...coach, 
+      id: Date.now().toString(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    setCoaches(prev => [...prev, newCoach]);
+    return newCoach;
   };
 
   const updateCoach = (coach: Coach) => {
-    try {
-      const updatedCoach = {
-        ...coach,
-        updatedAt: new Date().toISOString()
-      };
-      setCoaches(prev => prev.map(c => c.id === coach.id ? updatedCoach : c));
-    } catch (error) {
-      console.error('Ошибка при обновлении тренера:', error);
-      throw error;
-    }
+    const updatedCoach = {
+      ...coach,
+      updatedAt: new Date().toISOString()
+    };
+    setCoaches(prev => prev.map(c => c.id === coach.id ? updatedCoach : c));
   };
 
   const deleteCoach = (id: string) => {
-    try {
-      setCoaches(prev => prev.filter(c => c.id !== id));
-    } catch (error) {
-      console.error('Ошибка при удалении тренера:', error);
-      throw error;
-    }
+    setCoaches(prev => prev.filter(c => c.id !== id));
   };
 
   return {

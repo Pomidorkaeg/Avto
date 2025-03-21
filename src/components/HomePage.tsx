@@ -1,13 +1,25 @@
 import React, { useEffect, useState } from 'react';
 import { usePlayers } from '../hooks/useData';
 import { useCoaches } from '../hooks/useData';
+import { Player } from '../types/player';
+import { Coach } from '../types/coach';
 
 const HomePage: React.FC = () => {
   const { players: initialPlayers } = usePlayers();
   const { coaches: initialCoaches } = useCoaches();
-  const [players, setPlayers] = useState(initialPlayers);
-  const [coaches, setCoaches] = useState(initialCoaches);
+  const [players, setPlayers] = useState<Player[]>(initialPlayers);
+  const [coaches, setCoaches] = useState<Coach[]>(initialCoaches);
 
+  // Обновляем состояние при изменении начальных данных
+  useEffect(() => {
+    setPlayers(initialPlayers);
+  }, [initialPlayers]);
+
+  useEffect(() => {
+    setCoaches(initialCoaches);
+  }, [initialCoaches]);
+
+  // Слушаем обновления от других компонентов
   useEffect(() => {
     const handlePlayersUpdate = (e: CustomEvent) => {
       setPlayers(e.detail);
