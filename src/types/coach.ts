@@ -1,22 +1,14 @@
-export interface Player {
+export interface Coach {
   id: string;
   name: string;
   position: string;
-  number: number;
   age: number;
-  height: number;
-  weight: number;
   nationality: string;
   photo: string;
-  stats: {
-    games: number;
-    goals: number;
-    assists: number;
-    yellowCards: number;
-    redCards: number;
-  };
+  experience: number;
   biography: string;
   achievements: string[];
+  specializations: string[];
   socialLinks: {
     instagram?: string;
     twitter?: string;
@@ -25,4 +17,4 @@ export interface Player {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-}
+} 
