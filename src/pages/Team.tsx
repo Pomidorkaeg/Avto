@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -201,7 +200,7 @@ const Team = () => {
               
               <h1 className="text-4xl font-bold mb-4">Наша команда</h1>
               <p className="max-w-2xl text-white/80 text-lg">
-                Познакомьтесь с игроками и тренерским составом ФК Сибирь
+                Познакомьтесь с игроками и тренерским составом Гудаута
               </p>
               
               <div className="mt-8 flex space-x-2 p-1 bg-white/10 backdrop-blur-sm rounded-full">

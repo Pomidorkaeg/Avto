@@ -33,7 +33,7 @@ const Media = () => {
     {
       id: '2',
       type: 'image',
-      title: 'Матч ФК Сибирь - Спартак',
+      title: 'Матч Гудаута - Спартак',
       date: '15.04.2024',
       thumbnail: 'https://images.unsplash.com/photo-1550881111-7cfde14b8073?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80',
       url: 'https://images.unsplash.com/photo-1550881111-7cfde14b8073?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2069&q=80',
@@ -42,7 +42,7 @@ const Media = () => {
     {
       id: '3',
       type: 'video',
-      title: 'Обзор матча ФК Сибирь - Енисей',
+      title: 'Обзор матча Гудаута - Енисей',
       date: '11.04.2024',
       thumbnail: 'https://images.unsplash.com/photo-1587329310686-91414b8e3cb7?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80',
       url: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ',

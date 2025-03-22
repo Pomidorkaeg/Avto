@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
@@ -17,7 +16,7 @@ const Matches = () => {
       id: '1',
       tournament: '3 Лига ПФЛ',
       tournamentId: 'league-3',
-      homeTeam: 'ФК Сибирь',
+      homeTeam: 'Гудаута',
       awayTeam: 'Спартак',
       date: '15.05.2024',
       time: '19:00',
@@ -31,7 +30,7 @@ const Matches = () => {
       id: '2',
       tournament: 'Кубок России',
       tournamentId: 'russia-cup',
-      homeTeam: 'ФК Сибирь',
+      homeTeam: 'Гудаута',
       awayTeam: 'Спартак',
       date: '20.05.2024',
       time: '17:00',
@@ -45,7 +44,7 @@ const Matches = () => {
       id: '3',
       tournament: 'Чемпионат города Новосибирска',
       tournamentId: 'novosibirsk-championship',
-      homeTeam: 'ФК Сибирь',
+      homeTeam: 'Гудаута',
       awayTeam: 'Локомотив',
       date: '25.05.2024',
       time: '16:00',
@@ -60,7 +59,7 @@ const Matches = () => {
       tournament: 'Кубок победы',
       tournamentId: 'victory-cup',
       homeTeam: 'Динамо',
-      awayTeam: 'ФК Сибирь',
+      awayTeam: 'Гудаута',
       date: '05.06.2024',
       time: '18:30',
       stadium: 'Стадион Динамо',
@@ -75,7 +74,7 @@ const Matches = () => {
       id: '5',
       tournament: '3 Лига ПФЛ',
       tournamentId: 'league-3',
-      homeTeam: 'ФК Сибирь',
+      homeTeam: 'Гудаута',
       awayTeam: 'Енисей',
       date: '10.04.2024',
       time: '17:00',
@@ -90,7 +89,7 @@ const Matches = () => {
       tournament: 'Кубок России',
       tournamentId: 'russia-cup',
       homeTeam: 'ЦСКА',
-      awayTeam: 'ФК Сибирь',
+      awayTeam: 'Гудаута',
       date: '05.04.2024',
       time: '19:30',
       stadium: 'Арена ЦСКА',
@@ -103,7 +102,7 @@ const Matches = () => {
       id: '7',
       tournament: 'Чемпионат города Новосибирска',
       tournamentId: 'novosibirsk-championship',
-      homeTeam: 'ФК Сибирь',
+      homeTeam: 'Гудаута',
       awayTeam: 'Динамо',
       date: '28.03.2024',
       time: '16:00',
@@ -118,7 +117,7 @@ const Matches = () => {
       tournament: 'Кубок новосибирской области',
       tournamentId: 'novosibirsk-region-cup',
       homeTeam: 'Локомотив',
-      awayTeam: 'ФК Сибирь',
+      awayTeam: 'Гудаута',
       date: '15.03.2024',
       time: '15:00',
       stadium: 'Стадион Локомотив',
@@ -196,7 +195,7 @@ const Matches = () => {
               
               <h1 className="text-4xl font-bold mb-4">Матчи</h1>
               <p className="max-w-2xl text-white/80 text-lg">
-                Расписание прошедших и предстоящих матчей ФК Сибирь
+                Расписание прошедших и предстоящих матчей Гудаута
               </p>
             </div>
           </div>

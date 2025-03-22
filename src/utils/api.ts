@@ -1,4 +1,3 @@
-
 import { toast } from '@/components/ui/use-toast';
 
 // Define interfaces for the API responses
@@ -73,7 +72,7 @@ export const getTournamentTable = async (tournamentId: string, source: string): 
       
       // This is placeholder data - in a real app, this would come from the API
       resolve({
-        title: "Кубок среди любительских команд МОО СФФ «Сибирь» сезона 2024 года",
+        title: "Кубок среди любительских команд МОО СФФ «Гудаута» сезона 2024 года",
         season: "2024",
         lastUpdated: new Date().toLocaleDateString('ru-RU'),
         teams: [
