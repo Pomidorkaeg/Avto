@@ -1,12 +1,13 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import AdminPanel from './pages/AdminPanel';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import AdminPanel from './components/AdminPanel';
 
 function App() {
   return (
-    <Router>
+    <Router basename="/">
       <Routes>
         <Route path="/admin" element={<AdminPanel />} />
+        <Route path="*" element={<Navigate to="/admin" replace />} />
       </Routes>
     </Router>
   );

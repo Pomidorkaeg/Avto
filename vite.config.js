@@ -4,9 +4,11 @@ import react from '@vitejs/plugin-react';
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  base: '/Gu/', // Set the base path to match your GitHub Pages repository
+  base: '/Gu/',
   build: {
     outDir: 'dist',
     assetsDir: 'assets',
+    emptyOutDir: true,
+    sourcemap: false,
   }
 });

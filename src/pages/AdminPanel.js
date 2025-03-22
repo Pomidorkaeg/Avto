@@ -4,6 +4,7 @@ import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebas
 import { collection, getDocs, doc, updateDoc, deleteDoc, addDoc } from 'firebase/firestore';
 
 const AdminPanel = () => {
+  // State management
   const [user, setUser] = useState(null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,19 +15,7 @@ const AdminPanel = () => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
-  useEffect(() => {
-    // Check if user is logged in
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setUser(user);
-      if (user) {
-        fetchPlayers();
-        fetchCoaches();
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
-
+  // Data fetching functions
   const fetchPlayers = async () => {
     try {
       const querySnapshot = await getDocs(collection(db, 'players'));
@@ -53,6 +42,7 @@ const AdminPanel = () => {
     }
   };
 
+  // Authentication handlers
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
@@ -73,6 +63,7 @@ const AdminPanel = () => {
     }
   };
 
+  // CRUD operation handlers
   const handleEdit = (item, type) => {
     setEditMode(type);
     setCurrentItem(item);
@@ -177,6 +168,19 @@ const AdminPanel = () => {
       setError('Create failed: ' + err.message);
     }
   };
+
+  useEffect(() => {
+    // Check if user is logged in
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      if (user) {
+        fetchPlayers();
+        fetchCoaches();
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   // Login Form
   if (!user) {
