@@ -27,7 +27,7 @@ const CoachManagement: React.FC = () => {
     try {
       console.log('CoachManagement: сохранение тренера', coach);
       if (editingCoach) {
-        updateCoach(coach);
+        updateCoach(coach.id, coach);
       } else {
         addCoach(coach);
       }
@@ -80,6 +80,11 @@ const CoachManagement: React.FC = () => {
             />
             <h3 className="text-xl font-semibold">{coach.name}</h3>
             <p>{coach.position}</p>
+            <p>Возраст: {coach.age}</p>
+            <p>Опыт: {coach.experience} лет</p>
+            <p>Национальность: {coach.nationality}</p>
+            <p>Биография: {coach.biography}</p>
+            <p>Достижения: {coach.achievements.join(', ')}</p>
             <div className="mt-4 flex space-x-2">
               <button
                 onClick={() => {
@@ -102,183 +107,117 @@ const CoachManagement: React.FC = () => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-full max-w-2xl">
-            <h3 className="text-xl font-bold mb-4">
-              {editingCoach ? 'Редактировать тренера' : 'Добавить тренера'}
-            </h3>
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              const coach: Coach = {
-                id: editingCoach?.id || '',
-                name: formData.get('name') as string,
-                position: formData.get('position') as string,
-                age: parseInt(formData.get('age') as string),
-                experience: parseInt(formData.get('experience') as string),
-                nationality: formData.get('nationality') as string,
-                photo: formData.get('photo') as string,
-                biography: formData.get('biography') as string,
-                specializations: (formData.get('specializations') as string).split('\n'),
-                achievements: (formData.get('achievements') as string).split('\n'),
-                socialLinks: {
-                  instagram: formData.get('instagram') as string,
-                  twitter: formData.get('twitter') as string,
-                  vk: formData.get('vk') as string,
-                },
-                isActive: formData.get('isActive') === 'true',
-                createdAt: editingCoach?.createdAt || new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-              };
-              handleSave(coach);
-            }}>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block mb-1">Имя</label>
-                  <input
-                    type="text"
-                    name="name"
-                    defaultValue={editingCoach?.name}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Должность</label>
-                  <input
-                    type="text"
-                    name="position"
-                    defaultValue={editingCoach?.position}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Возраст</label>
-                  <input
-                    type="number"
-                    name="age"
-                    defaultValue={editingCoach?.age}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Опыт (лет)</label>
-                  <input
-                    type="number"
-                    name="experience"
-                    defaultValue={editingCoach?.experience}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Национальность</label>
-                  <input
-                    type="text"
-                    name="nationality"
-                    defaultValue={editingCoach?.nationality}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Фото URL</label>
-                  <input
-                    type="text"
-                    name="photo"
-                    defaultValue={editingCoach?.photo}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <label className="block mb-1">Биография</label>
-                <textarea
-                  name="biography"
-                  defaultValue={editingCoach?.biography}
-                  className="w-full border rounded p-2"
-                  rows={4}
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-bold mb-4">{editingCoach ? 'Редактировать тренера' : 'Добавить тренера'}</h2>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (editingCoach) {
+                  handleSave(editingCoach);
+                }
+              }}
+            >
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Имя</label>
+                <input
+                  type="text"
+                  value={editingCoach?.name || ''}
+                  onChange={(e) => setEditingCoach({ ...editingCoach!, name: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   required
                 />
               </div>
-
-              <div className="mt-4">
-                <label className="block mb-1">Специализации (по одной в строке)</label>
-                <textarea
-                  name="specializations"
-                  defaultValue={editingCoach?.specializations.join('\n')}
-                  className="w-full border rounded p-2"
-                  rows={4}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Позиция</label>
+                <input
+                  type="text"
+                  value={editingCoach?.position || ''}
+                  onChange={(e) => setEditingCoach({ ...editingCoach!, position: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   required
                 />
               </div>
-
-              <div className="mt-4">
-                <label className="block mb-1">Достижения (по одному в строке)</label>
-                <textarea
-                  name="achievements"
-                  defaultValue={editingCoach?.achievements.join('\n')}
-                  className="w-full border rounded p-2"
-                  rows={4}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Возраст</label>
+                <input
+                  type="number"
+                  value={editingCoach?.age || ''}
+                  onChange={(e) => setEditingCoach({ ...editingCoach!, age: parseInt(e.target.value) })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   required
                 />
               </div>
-
-              <div className="grid grid-cols-3 gap-4 mt-4">
-                <div>
-                  <label className="block mb-1">Instagram</label>
-                  <input
-                    type="text"
-                    name="instagram"
-                    defaultValue={editingCoach?.socialLinks.instagram}
-                    className="w-full border rounded p-2"
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Twitter</label>
-                  <input
-                    type="text"
-                    name="twitter"
-                    defaultValue={editingCoach?.socialLinks.twitter}
-                    className="w-full border rounded p-2"
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">VK</label>
-                  <input
-                    type="text"
-                    name="vk"
-                    defaultValue={editingCoach?.socialLinks.vk}
-                    className="w-full border rounded p-2"
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <label className="block mb-1">Статус</label>
-                <select
-                  name="isActive"
-                  defaultValue={editingCoach?.isActive ? 'true' : 'false'}
-                  className="w-full border rounded p-2"
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Опыт (лет)</label>
+                <input
+                  type="number"
+                  value={editingCoach?.experience || ''}
+                  onChange={(e) => setEditingCoach({ ...editingCoach!, experience: parseInt(e.target.value) })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   required
-                >
-                  <option value="true">Активный</option>
-                  <option value="false">Неактивный</option>
-                </select>
+                />
               </div>
-
-              <div className="flex justify-end mt-6 space-x-2">
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Национальность</label>
+                <input
+                  type="text"
+                  value={editingCoach?.nationality || ''}
+                  onChange={(e) => setEditingCoach({ ...editingCoach!, nationality: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Биография</label>
+                <textarea
+                  value={editingCoach?.biography || ''}
+                  onChange={(e) => setEditingCoach({ ...editingCoach!, biography: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Достижения</label>
+                <input
+                  type="text"
+                  value={editingCoach?.achievements.join(', ') || ''}
+                  onChange={(e) => setEditingCoach({ ...editingCoach!, achievements: e.target.value.split(',').map(a => a.trim()) })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Ссылки на соцсети</label>
+                <input
+                  type="text"
+                  placeholder="Instagram"
+                  value={editingCoach?.socialLinks.instagram || ''}
+                  onChange={(e) => setEditingCoach({ ...editingCoach!, socialLinks: { ...editingCoach!.socialLinks, instagram: e.target.value } })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+                <input
+                  type="text"
+                  placeholder="Twitter"
+                  value={editingCoach?.socialLinks.twitter || ''}
+                  onChange={(e) => setEditingCoach({ ...editingCoach!, socialLinks: { ...editingCoach!.socialLinks, twitter: e.target.value } })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+                <input
+                  type="text"
+                  placeholder="VK"
+                  value={editingCoach?.socialLinks.vk || ''}
+                  onChange={(e) => setEditingCoach({ ...editingCoach!, socialLinks: { ...editingCoach!.socialLinks, vk: e.target.value } })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="flex justify-end">
                 <button
                   type="button"
                   onClick={() => {
                     setIsModalOpen(false);
                     setEditingCoach(null);
                   }}
-                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mr-2"
                 >
                   Отмена
                 </button>

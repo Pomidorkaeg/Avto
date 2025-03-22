@@ -27,7 +27,7 @@ const PlayerManagement: React.FC = () => {
     try {
       console.log('PlayerManagement: сохранение игрока', player);
       if (editingPlayer) {
-        updatePlayer(player);
+        updatePlayer(player.id, player);
       } else {
         addPlayer(player);
       }
@@ -80,6 +80,12 @@ const PlayerManagement: React.FC = () => {
             />
             <h3 className="text-xl font-semibold">{player.name}</h3>
             <p>{player.position} #{player.number}</p>
+            <p>Возраст: {player.age}</p>
+            <p>Рост: {player.height} см</p>
+            <p>Вес: {player.weight} кг</p>
+            <p>Национальность: {player.nationality}</p>
+            <p>Биография: {player.biography}</p>
+            <p>Достижения: {player.achievements.join(', ')}</p>
             <div className="mt-4 flex space-x-2">
               <button
                 onClick={() => {
@@ -102,253 +108,137 @@ const PlayerManagement: React.FC = () => {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="bg-white p-6 rounded-lg w-full max-w-2xl">
-            <h3 className="text-xl font-bold mb-4">
-              {editingPlayer ? 'Редактировать игрока' : 'Добавить игрока'}
-            </h3>
-            <form onSubmit={(e) => {
-              e.preventDefault();
-              const formData = new FormData(e.currentTarget);
-              const player: Player = {
-                id: editingPlayer?.id || '',
-                name: formData.get('name') as string,
-                position: formData.get('position') as string,
-                number: parseInt(formData.get('number') as string),
-                age: parseInt(formData.get('age') as string),
-                height: parseInt(formData.get('height') as string),
-                weight: parseInt(formData.get('weight') as string),
-                nationality: formData.get('nationality') as string,
-                photo: formData.get('photo') as string,
-                biography: formData.get('biography') as string,
-                achievements: (formData.get('achievements') as string).split('\n'),
-                socialLinks: {
-                  instagram: formData.get('instagram') as string,
-                  twitter: formData.get('twitter') as string,
-                  vk: formData.get('vk') as string,
-                },
-                stats: {
-                  games: parseInt(formData.get('games') as string),
-                  goals: parseInt(formData.get('goals') as string),
-                  assists: parseInt(formData.get('assists') as string),
-                  yellowCards: parseInt(formData.get('yellowCards') as string) || 0,
-                  redCards: parseInt(formData.get('redCards') as string) || 0,
-                },
-                isActive: formData.get('isActive') === 'true',
-                createdAt: editingPlayer?.createdAt || new Date().toISOString(),
-                updatedAt: new Date().toISOString(),
-              };
-              handleSave(player);
-            }}>
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block mb-1">Имя</label>
-                  <input
-                    type="text"
-                    name="name"
-                    defaultValue={editingPlayer?.name}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Позиция</label>
-                  <input
-                    type="text"
-                    name="position"
-                    defaultValue={editingPlayer?.position}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Номер</label>
-                  <input
-                    type="number"
-                    name="number"
-                    defaultValue={editingPlayer?.number}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Возраст</label>
-                  <input
-                    type="number"
-                    name="age"
-                    defaultValue={editingPlayer?.age}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Рост (см)</label>
-                  <input
-                    type="number"
-                    name="height"
-                    defaultValue={editingPlayer?.height}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Вес (кг)</label>
-                  <input
-                    type="number"
-                    name="weight"
-                    defaultValue={editingPlayer?.weight}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Национальность</label>
-                  <input
-                    type="text"
-                    name="nationality"
-                    defaultValue={editingPlayer?.nationality}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Фото URL</label>
-                  <input
-                    type="text"
-                    name="photo"
-                    defaultValue={editingPlayer?.photo}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <label className="block mb-1">Биография</label>
-                <textarea
-                  name="biography"
-                  defaultValue={editingPlayer?.biography}
-                  className="w-full border rounded p-2"
-                  rows={4}
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <h2 className="text-xl font-bold mb-4">{editingPlayer ? 'Редактировать игрока' : 'Добавить игрока'}</h2>
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                if (editingPlayer) {
+                  handleSave(editingPlayer);
+                }
+              }}
+            >
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Имя</label>
+                <input
+                  type="text"
+                  value={editingPlayer?.name || ''}
+                  onChange={(e) => setEditingPlayer({ ...editingPlayer!, name: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   required
                 />
               </div>
-
-              <div className="mt-4">
-                <label className="block mb-1">Достижения (по одному в строке)</label>
-                <textarea
-                  name="achievements"
-                  defaultValue={editingPlayer?.achievements.join('\n')}
-                  className="w-full border rounded p-2"
-                  rows={4}
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Позиция</label>
+                <input
+                  type="text"
+                  value={editingPlayer?.position || ''}
+                  onChange={(e) => setEditingPlayer({ ...editingPlayer!, position: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   required
                 />
               </div>
-
-              <div className="grid grid-cols-3 gap-4 mt-4">
-                <div>
-                  <label className="block mb-1">Instagram</label>
-                  <input
-                    type="text"
-                    name="instagram"
-                    defaultValue={editingPlayer?.socialLinks.instagram}
-                    className="w-full border rounded p-2"
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Twitter</label>
-                  <input
-                    type="text"
-                    name="twitter"
-                    defaultValue={editingPlayer?.socialLinks.twitter}
-                    className="w-full border rounded p-2"
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">VK</label>
-                  <input
-                    type="text"
-                    name="vk"
-                    defaultValue={editingPlayer?.socialLinks.vk}
-                    className="w-full border rounded p-2"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-5 gap-4 mt-4">
-                <div>
-                  <label className="block mb-1">Игры</label>
-                  <input
-                    type="number"
-                    name="games"
-                    defaultValue={editingPlayer?.stats.games}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Голы</label>
-                  <input
-                    type="number"
-                    name="goals"
-                    defaultValue={editingPlayer?.stats.goals}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Передачи</label>
-                  <input
-                    type="number"
-                    name="assists"
-                    defaultValue={editingPlayer?.stats.assists}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Желтые карточки</label>
-                  <input
-                    type="number"
-                    name="yellowCards"
-                    defaultValue={editingPlayer?.stats.yellowCards}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="block mb-1">Красные карточки</label>
-                  <input
-                    type="number"
-                    name="redCards"
-                    defaultValue={editingPlayer?.stats.redCards}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-              </div>
-
-              <div className="mt-4">
-                <label className="block mb-1">Статус</label>
-                <select
-                  name="isActive"
-                  defaultValue={editingPlayer?.isActive ? 'true' : 'false'}
-                  className="w-full border rounded p-2"
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Номер</label>
+                <input
+                  type="number"
+                  value={editingPlayer?.number || ''}
+                  onChange={(e) => setEditingPlayer({ ...editingPlayer!, number: parseInt(e.target.value) })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                   required
-                >
-                  <option value="true">Активный</option>
-                  <option value="false">Неактивный</option>
-                </select>
+                />
               </div>
-
-              <div className="flex justify-end mt-6 space-x-2">
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Возраст</label>
+                <input
+                  type="number"
+                  value={editingPlayer?.age || ''}
+                  onChange={(e) => setEditingPlayer({ ...editingPlayer!, age: parseInt(e.target.value) })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Рост (см)</label>
+                <input
+                  type="number"
+                  value={editingPlayer?.height || ''}
+                  onChange={(e) => setEditingPlayer({ ...editingPlayer!, height: parseInt(e.target.value) })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Вес (кг)</label>
+                <input
+                  type="number"
+                  value={editingPlayer?.weight || ''}
+                  onChange={(e) => setEditingPlayer({ ...editingPlayer!, weight: parseInt(e.target.value) })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Национальность</label>
+                <input
+                  type="text"
+                  value={editingPlayer?.nationality || ''}
+                  onChange={(e) => setEditingPlayer({ ...editingPlayer!, nationality: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Биография</label>
+                <textarea
+                  value={editingPlayer?.biography || ''}
+                  onChange={(e) => setEditingPlayer({ ...editingPlayer!, biography: e.target.value })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Достижения</label>
+                <input
+                  type="text"
+                  value={editingPlayer?.achievements.join(', ') || ''}
+                  onChange={(e) => setEditingPlayer({ ...editingPlayer!, achievements: e.target.value.split(',').map(a => a.trim()) })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Ссылки на соцсети</label>
+                <input
+                  type="text"
+                  placeholder="Instagram"
+                  value={editingPlayer?.socialLinks.instagram || ''}
+                  onChange={(e) => setEditingPlayer({ ...editingPlayer!, socialLinks: { ...editingPlayer!.socialLinks, instagram: e.target.value } })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+                <input
+                  type="text"
+                  placeholder="Twitter"
+                  value={editingPlayer?.socialLinks.twitter || ''}
+                  onChange={(e) => setEditingPlayer({ ...editingPlayer!, socialLinks: { ...editingPlayer!.socialLinks, twitter: e.target.value } })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+                <input
+                  type="text"
+                  placeholder="VK"
+                  value={editingPlayer?.socialLinks.vk || ''}
+                  onChange={(e) => setEditingPlayer({ ...editingPlayer!, socialLinks: { ...editingPlayer!.socialLinks, vk: e.target.value } })}
+                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                />
+              </div>
+              <div className="flex justify-end">
                 <button
                   type="button"
                   onClick={() => {
                     setIsModalOpen(false);
                     setEditingPlayer(null);
                   }}
-                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+                  className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mr-2"
                 >
                   Отмена
                 </button>
