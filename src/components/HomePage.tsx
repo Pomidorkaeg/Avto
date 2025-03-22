@@ -221,35 +221,30 @@ const HomePage: React.FC = () => {
       <h2 className="text-3xl font-bold mb-8 text-center">Турнирные таблицы</h2>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-        {players.map((player) => (
-          <div key={player.id} className="bg-white rounded-lg shadow-lg p-6">
-            <h3 className="text-2xl font-bold mb-4 text-gray-900">{player.name}</h3>
+        {tournaments.map((tournament) => (
+          <div key={tournament.id} className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-2xl font-bold mb-4 text-gray-900">{tournament.name}</h3>
             <div className="space-y-4">
-              {player.stats && (
-                <>
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-900">Игры:</span>
-                    <span className="font-medium text-gray-900">{player.stats.games}</span>
+              {tournament.matches.map((match) => (
+                <div key={match.id} className="border-b pb-4">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="font-semibold text-gray-900">{match.date}</span>
+                    <span className="text-sm text-gray-500">{match.time}</span>
                   </div>
                   <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-900">Голы:</span>
-                    <span className="font-medium text-gray-900">{player.stats.goals}</span>
+                    <span className="font-medium text-gray-900">{match.homeTeam}</span>
+                    <span className="text-gray-500">vs</span>
+                    <span className="font-medium text-gray-900">{match.awayTeam}</span>
                   </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-900">Передачи:</span>
-                    <span className="font-medium text-gray-900">{player.stats.assists}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-900">Желтые карточки:</span>
-                    <span className="font-medium text-gray-900">{player.stats.yellowCards}</span>
-                  </div>
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold text-gray-900">Красные карточки:</span>
-                    <span className="font-medium text-gray-900">{player.stats.redCards}</span>
-                  </div>
-                </>
-              )}
+                </div>
+              ))}
             </div>
+            <button
+              onClick={() => window.open(tournament.link, '_blank')}
+              className="mt-6 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200"
+            >
+              Подробнее
+            </button>
           </div>
         ))}
       </div>
