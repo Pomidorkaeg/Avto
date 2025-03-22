@@ -87,6 +87,38 @@ const HomePage: React.FC = () => {
     return () => clearInterval(timer);
   }, []);
 
+  // Загрузка данных при первой загрузке страницы
+  useEffect(() => {
+    const loadInitialData = () => {
+      try {
+        // Получаем данные из localStorage
+        const savedPlayers = localStorage.getItem('players');
+        const savedCoaches = localStorage.getItem('coaches');
+        
+        // Если данные есть, используем их
+        if (savedPlayers) {
+          setPlayers(JSON.parse(savedPlayers));
+        }
+        
+        if (savedCoaches) {
+          setCoaches(JSON.parse(savedCoaches));
+        }
+        
+        // Принудительное обновление
+        setForceUpdate(prev => prev + 1);
+      } catch (error) {
+        console.error('Ошибка при загрузке начальных данных:', error);
+      }
+    };
+    
+    // Загружаем данные при монтировании компонента
+    loadInitialData();
+    
+    // Загружаем данные при полной загрузке страницы
+    window.addEventListener('load', loadInitialData);
+    return () => window.removeEventListener('load', loadInitialData);
+  }, []);
+
   console.log('HomePage: рендеринг', { players, coaches, forceUpdate });
 
   return (
@@ -110,11 +142,11 @@ const HomePage: React.FC = () => {
               <p className="text-gray-600 mb-2">Национальность: {player.nationality}</p>
               <div className="mt-4">
                 <h3 className="font-semibold mb-2">Статистика:</h3>
-                <p>Игры: {player.stats.games}</p>
-                <p>Голы: {player.stats.goals}</p>
-                <p>Передачи: {player.stats.assists}</p>
-                <p>Желтые карточки: {player.stats.yellowCards}</p>
-                <p>Красные карточки: {player.stats.redCards}</p>
+                <p>Игры: {player.stats?.games}</p>
+                <p>Голы: {player.stats?.goals}</p>
+                <p>Передачи: {player.stats?.assists}</p>
+                <p>Желтые карточки: {player.stats?.yellowCards}</p>
+                <p>Красные карточки: {player.stats?.redCards}</p>
               </div>
             </div>
           </div>
@@ -140,7 +172,7 @@ const HomePage: React.FC = () => {
                 <div className="mt-4">
                   <h3 className="font-semibold mb-2">Специализации:</h3>
                   <ul className="list-disc list-inside">
-                    {coach.specializations.map((spec, index) => (
+                    {coach.specializations?.map((spec, index) => (
                       <li key={index}>{spec}</li>
                     ))}
                   </ul>
