@@ -43,27 +43,23 @@ export const getPlayer = async (id) => {
   }
 };
 
-export const updatePlayer = async (player) => {
+// В adminApi.js
+export const updatePlayer = async (playerData) => {
   try {
-    const { id, ...playerData } = player;
-    // Если id не существует, используем setDoc вместо updateDoc
-    if (!id) {
-      throw new Error('Player ID is required for update');
-    }
-    
-    const playerRef = doc(db, 'players', id);
-    // Используем setDoc с merge: true для обеспечения обновления
+    const playerRef = doc(db, 'players', playerData.id);
     await setDoc(playerRef, playerData, { merge: true });
-    
-    console.log('Player updated successfully:', id);
-    return {
-      id,
-      ...playerData
-    };
+    toast.success('Игрок обновлен!');
+    return true;
   } catch (error) {
-    console.error('Error updating player:', error);
-    throw error;
+    toast.error('Ошибка: ' + error.message);
+    return false;
   }
+};
+
+// В AdminPanel.js
+const handleSave = async () => {
+  await updatePlayer(currentPlayer);
+  loadPlayers(); // Автоматически обновляем список
 };
 
 export const deletePlayer = async (id) => {
