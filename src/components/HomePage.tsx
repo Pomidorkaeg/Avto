@@ -9,23 +9,28 @@ const HomePage: React.FC = () => {
   const { coaches: initialCoaches } = useCoaches();
   const [players, setPlayers] = useState<Player[]>(initialPlayers);
   const [coaches, setCoaches] = useState<Coach[]>(initialCoaches);
+  const [forceUpdate, setForceUpdate] = useState(0);
 
-  // Обновляем состояние при изменении начальных данных
+  // Обновляем состояние при изменении данных в хуках
   useEffect(() => {
+    console.log('HomePage: обновляю игроков из хука', initialPlayers);
     setPlayers(initialPlayers);
   }, [initialPlayers]);
 
   useEffect(() => {
+    console.log('HomePage: обновляю тренеров из хука', initialCoaches);
     setCoaches(initialCoaches);
   }, [initialCoaches]);
 
-  // Слушаем обновления от других компонентов
+  // Слушаем кастомные события обновления
   useEffect(() => {
     const handlePlayersUpdate = (e: CustomEvent) => {
+      console.log('HomePage: получено событие обновления игроков', e.detail);
       setPlayers(e.detail);
     };
 
     const handleCoachesUpdate = (e: CustomEvent) => {
+      console.log('HomePage: получено событие обновления тренеров', e.detail);
       setCoaches(e.detail);
     };
 
@@ -37,6 +42,52 @@ const HomePage: React.FC = () => {
       window.removeEventListener('coachesUpdated', handleCoachesUpdate as EventListener);
     };
   }, []);
+
+  // Принудительное обновление при изменении localStorage
+  useEffect(() => {
+    const handleStorageChange = (e: StorageEvent) => {
+      console.log('HomePage: обнаружено изменение в localStorage', e.key, e.newValue);
+      if (e.key === 'players' && e.newValue) {
+        setPlayers(JSON.parse(e.newValue));
+      }
+      if (e.key === 'coaches' && e.newValue) {
+        setCoaches(JSON.parse(e.newValue));
+      }
+      
+      // Принудительное обновление компонента
+      setForceUpdate(prev => prev + 1);
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, []);
+
+  // Периодическое обновление данных
+  useEffect(() => {
+    const timer = setInterval(() => {
+      try {
+        // Проверяем, есть ли данные в localStorage
+        const savedPlayers = localStorage.getItem('players');
+        const savedCoaches = localStorage.getItem('coaches');
+        
+        if (savedPlayers) {
+          const parsedPlayers = JSON.parse(savedPlayers);
+          setPlayers(parsedPlayers);
+        }
+        
+        if (savedCoaches) {
+          const parsedCoaches = JSON.parse(savedCoaches);
+          setCoaches(parsedCoaches);
+        }
+      } catch (error) {
+        console.error('Ошибка при обновлении данных:', error);
+      }
+    }, 5000);
+    
+    return () => clearInterval(timer);
+  }, []);
+
+  console.log('HomePage: рендеринг', { players, coaches, forceUpdate });
 
   return (
     <div className="container mx-auto px-4 py-8">

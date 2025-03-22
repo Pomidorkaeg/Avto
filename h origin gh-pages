@@ -16,3 +16,8 @@ Date:   Fri Mar 21 12:03:52 2025 +0300
            <Routes>[m
              <Route path="/" element={<HomePage />} />[m
              <Route path="/login" element={<LoginPage />} />[m
+[33mcommit 8b4f5c4e36f9ba148d03c449fb9e23c59be2b83d[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mgh-pages[m[33m, [m[1;31morigin/gh-pages[m[33m)[m
+Author: Егор <egornazarko2009.09@gmail.com>
+Date:   Fri Mar 21 15:55:24 2025 +0300
+
+    Улучшена синхронизация данных между админ-панелью и основным сайтом

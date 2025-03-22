@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Coach } from '../../types/coach';
 import { useCoaches } from '../../hooks/useData';
 
@@ -6,9 +6,26 @@ const CoachManagement: React.FC = () => {
   const { coaches, addCoach, updateCoach, deleteCoach } = useCoaches();
   const [editingCoach, setEditingCoach] = useState<Coach | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  // Обновляем localStorage после каждого изменения данных
+  const syncWithLocalStorage = () => {
+    console.log('CoachManagement: синхронизация с localStorage');
+    localStorage.setItem('coaches', JSON.stringify(coaches));
+    // Генерируем событие для обновления данных в других компонентах
+    window.dispatchEvent(new CustomEvent('coachesUpdated', { detail: coaches }));
+    // Для гарантированного обновления
+    setRefreshTrigger(prev => prev + 1);
+  };
+
+  // Сохраняем данные в localStorage при каждом изменении
+  useEffect(() => {
+    syncWithLocalStorage();
+  }, [coaches]);
 
   const handleSave = (coach: Coach) => {
     try {
+      console.log('CoachManagement: сохранение тренера', coach);
       if (editingCoach) {
         updateCoach(coach);
       } else {
@@ -16,6 +33,7 @@ const CoachManagement: React.FC = () => {
       }
       setIsModalOpen(false);
       setEditingCoach(null);
+      syncWithLocalStorage();
     } catch (error) {
       console.error('Ошибка при сохранении тренера:', error);
       alert('Произошла ошибка при сохранении данных. Пожалуйста, попробуйте еще раз.');
@@ -24,12 +42,18 @@ const CoachManagement: React.FC = () => {
 
   const handleDelete = (id: string) => {
     try {
-      deleteCoach(id);
+      console.log('CoachManagement: удаление тренера', id);
+      if (confirm('Вы действительно хотите удалить этого тренера?')) {
+        deleteCoach(id);
+        syncWithLocalStorage();
+      }
     } catch (error) {
       console.error('Ошибка при удалении тренера:', error);
       alert('Произошла ошибка при удалении данных. Пожалуйста, попробуйте еще раз.');
     }
   };
+
+  console.log('CoachManagement: рендеринг', { coaches, refreshTrigger });
 
   return (
     <div className="p-6">
@@ -91,12 +115,12 @@ const CoachManagement: React.FC = () => {
                 name: formData.get('name') as string,
                 position: formData.get('position') as string,
                 age: parseInt(formData.get('age') as string),
+                experience: parseInt(formData.get('experience') as string),
                 nationality: formData.get('nationality') as string,
                 photo: formData.get('photo') as string,
-                experience: parseInt(formData.get('experience') as string),
                 biography: formData.get('biography') as string,
-                achievements: (formData.get('achievements') as string).split('\n'),
                 specializations: (formData.get('specializations') as string).split('\n'),
+                achievements: (formData.get('achievements') as string).split('\n'),
                 socialLinks: {
                   instagram: formData.get('instagram') as string,
                   twitter: formData.get('twitter') as string,
@@ -120,7 +144,7 @@ const CoachManagement: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block mb-1">Позиция</label>
+                  <label className="block mb-1">Должность</label>
                   <input
                     type="text"
                     name="position"
@@ -140,21 +164,21 @@ const CoachManagement: React.FC = () => {
                   />
                 </div>
                 <div>
-                  <label className="block mb-1">Национальность</label>
-                  <input
-                    type="text"
-                    name="nationality"
-                    defaultValue={editingCoach?.nationality}
-                    className="w-full border rounded p-2"
-                    required
-                  />
-                </div>
-                <div>
                   <label className="block mb-1">Опыт (лет)</label>
                   <input
                     type="number"
                     name="experience"
                     defaultValue={editingCoach?.experience}
+                    className="w-full border rounded p-2"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block mb-1">Национальность</label>
+                  <input
+                    type="text"
+                    name="nationality"
+                    defaultValue={editingCoach?.nationality}
                     className="w-full border rounded p-2"
                     required
                   />
@@ -183,10 +207,10 @@ const CoachManagement: React.FC = () => {
               </div>
 
               <div className="mt-4">
-                <label className="block mb-1">Достижения (по одному в строке)</label>
+                <label className="block mb-1">Специализации (по одной в строке)</label>
                 <textarea
-                  name="achievements"
-                  defaultValue={editingCoach?.achievements.join('\n')}
+                  name="specializations"
+                  defaultValue={editingCoach?.specializations.join('\n')}
                   className="w-full border rounded p-2"
                   rows={4}
                   required
@@ -194,10 +218,10 @@ const CoachManagement: React.FC = () => {
               </div>
 
               <div className="mt-4">
-                <label className="block mb-1">Специализации (по одной в строке)</label>
+                <label className="block mb-1">Достижения (по одному в строке)</label>
                 <textarea
-                  name="specializations"
-                  defaultValue={editingCoach?.specializations.join('\n')}
+                  name="achievements"
+                  defaultValue={editingCoach?.achievements.join('\n')}
                   className="w-full border rounded p-2"
                   rows={4}
                   required
@@ -235,18 +259,19 @@ const CoachManagement: React.FC = () => {
               </div>
 
               <div className="mt-4">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="isActive"
-                    defaultChecked={editingCoach?.isActive}
-                    className="mr-2"
-                  />
-                  Активный тренер
-                </label>
+                <label className="block mb-1">Статус</label>
+                <select
+                  name="isActive"
+                  defaultValue={editingCoach?.isActive ? 'true' : 'false'}
+                  className="w-full border rounded p-2"
+                  required
+                >
+                  <option value="true">Активный</option>
+                  <option value="false">Неактивный</option>
+                </select>
               </div>
 
-              <div className="mt-6 flex justify-end space-x-4">
+              <div className="flex justify-end mt-6 space-x-2">
                 <button
                   type="button"
                   onClick={() => {

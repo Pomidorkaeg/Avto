@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Player } from '../../types/player';
 import { usePlayers } from '../../hooks/useData';
 
@@ -6,9 +6,26 @@ const PlayerManagement: React.FC = () => {
   const { players, addPlayer, updatePlayer, deletePlayer } = usePlayers();
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [refreshTrigger, setRefreshTrigger] = useState(0);
+
+  // Обновляем localStorage после каждого изменения данных
+  const syncWithLocalStorage = () => {
+    console.log('PlayerManagement: синхронизация с localStorage');
+    localStorage.setItem('players', JSON.stringify(players));
+    // Генерируем событие для обновления данных в других компонентах
+    window.dispatchEvent(new CustomEvent('playersUpdated', { detail: players }));
+    // Для гарантированного обновления
+    setRefreshTrigger(prev => prev + 1);
+  };
+
+  // Сохраняем данные в localStorage при каждом изменении
+  useEffect(() => {
+    syncWithLocalStorage();
+  }, [players]);
 
   const handleSave = (player: Player) => {
     try {
+      console.log('PlayerManagement: сохранение игрока', player);
       if (editingPlayer) {
         updatePlayer(player);
       } else {
@@ -16,6 +33,7 @@ const PlayerManagement: React.FC = () => {
       }
       setIsModalOpen(false);
       setEditingPlayer(null);
+      syncWithLocalStorage();
     } catch (error) {
       console.error('Ошибка при сохранении игрока:', error);
       alert('Произошла ошибка при сохранении данных. Пожалуйста, попробуйте еще раз.');
@@ -24,12 +42,18 @@ const PlayerManagement: React.FC = () => {
 
   const handleDelete = (id: string) => {
     try {
-      deletePlayer(id);
+      console.log('PlayerManagement: удаление игрока', id);
+      if (confirm('Вы действительно хотите удалить этого игрока?')) {
+        deletePlayer(id);
+        syncWithLocalStorage();
+      }
     } catch (error) {
       console.error('Ошибка при удалении игрока:', error);
       alert('Произошла ошибка при удалении данных. Пожалуйста, попробуйте еще раз.');
     }
   };
+
+  console.log('PlayerManagement: рендеринг', { players, refreshTrigger });
 
   return (
     <div className="p-6">
@@ -251,7 +275,7 @@ const PlayerManagement: React.FC = () => {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-4 mt-4">
+              <div className="grid grid-cols-5 gap-4 mt-4">
                 <div>
                   <label className="block mb-1">Игры</label>
                   <input
@@ -305,18 +329,19 @@ const PlayerManagement: React.FC = () => {
               </div>
 
               <div className="mt-4">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    name="isActive"
-                    defaultChecked={editingPlayer?.isActive}
-                    className="mr-2"
-                  />
-                  Активный игрок
-                </label>
+                <label className="block mb-1">Статус</label>
+                <select
+                  name="isActive"
+                  defaultValue={editingPlayer?.isActive ? 'true' : 'false'}
+                  className="w-full border rounded p-2"
+                  required
+                >
+                  <option value="true">Активный</option>
+                  <option value="false">Неактивный</option>
+                </select>
               </div>
 
-              <div className="mt-6 flex justify-end space-x-4">
+              <div className="flex justify-end mt-6 space-x-2">
                 <button
                   type="button"
                   onClick={() => {
