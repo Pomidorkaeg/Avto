@@ -1,306 +1,338 @@
 import { useState, useEffect } from 'react';
 import { Player } from '../types/player';
 import { Coach } from '../types/coach';
+import { v4 as uuidv4 } from 'uuid';
 
+// Ключи для хранения данных
 const STORAGE_KEYS = {
-  PLAYERS: 'players',
-  COACHES: 'coaches',
-  SESSION_ID: 'session_id'
-} as const;
-
-// Создаем кастомные события для синхронизации
-const EVENTS = {
-  PLAYERS_UPDATED: 'playersUpdated',
-  COACHES_UPDATED: 'coachesUpdated',
-} as const;
-
-// Создаем уникальный идентификатор сессии
-const getSessionId = () => {
-  let sessionId = localStorage.getItem(STORAGE_KEYS.SESSION_ID);
-  if (!sessionId) {
-    sessionId = Date.now().toString();
-    localStorage.setItem(STORAGE_KEYS.SESSION_ID, sessionId);
-  }
-  return sessionId;
+  PLAYERS: 'tournament_players',
+  COACHES: 'tournament_coaches',
 };
 
-// Создаем или получаем ID сессии
-const SESSION_ID = getSessionId();
+// Создаем глобальные переменные для хранения данных между перезагрузками компонентов
+let globalPlayers: Player[] = [];
+let globalCoaches: Coach[] = [];
 
-// Начальные данные для игроков
+// Начальные данные для игроков, если в хранилище ничего нет
 const initialPlayers: Player[] = [
   {
-    id: '1',
+    id: uuidv4(),
     name: 'Иван Петров',
     position: 'Нападающий',
-    number: 10,
+    number: 9,
     age: 25,
-    height: 182,
-    weight: 76,
+    height: 184,
+    weight: 78,
     nationality: 'Россия',
-    photo: 'https://placehold.co/600x400/orange/white?text=Player',
+    photo: 'https://placehold.co/300x300/orange/white?text=Иван+Петров',
     stats: {
-      games: 42,
+      games: 30,
       goals: 15,
-      assists: 8,
-      yellowCards: 3,
-      redCards: 0,
+      assists: 7,
+      yellowCards: 4,
+      redCards: 0
     },
-    biography: 'Талантливый нападающий, начал карьеру в юношеской команде.',
-    achievements: ['Чемпион России 2022', 'Лучший бомбардир сезона 2021'],
+    biography: 'Талантливый нападающий с хорошим чувством гола.',
+    achievements: ['Лучший бомбардир сезона 2021', 'Игрок месяца (март 2022)'],
     socialLinks: {
       instagram: 'https://instagram.com/ivpetrov',
-      twitter: 'https://twitter.com/ivpetrov',
-      vk: 'https://vk.com/ivpetrov',
+      twitter: '',
+      vk: 'https://vk.com/ivpetrov'
     },
-    isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
+    isActive: true
   },
+  {
+    id: uuidv4(),
+    name: 'Александр Иванов',
+    position: 'Полузащитник',
+    number: 8,
+    age: 27,
+    height: 179,
+    weight: 72,
+    nationality: 'Россия',
+    photo: 'https://placehold.co/300x300/orange/white?text=Александр+Иванов',
+    stats: {
+      games: 32,
+      goals: 5,
+      assists: 12,
+      yellowCards: 6,
+      redCards: 1
+    },
+    biography: 'Опытный полузащитник с отличным видением поля.',
+    achievements: ['Чемпион России 2020', 'Обладатель Кубка России 2022'],
+    socialLinks: {
+      instagram: 'https://instagram.com/aivanov',
+      twitter: 'https://twitter.com/aivanov',
+      vk: 'https://vk.com/aivanov'
+    },
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    isActive: true
+  }
 ];
 
-// Начальные данные для тренеров
+// Начальные данные для тренеров, если в хранилище ничего нет
 const initialCoaches: Coach[] = [
   {
-    id: '1',
-    name: 'Сергей Иванов',
+    id: uuidv4(),
+    name: 'Сергей Михайлов',
     position: 'Главный тренер',
-    age: 52,
+    age: 50,
     experience: 15,
     nationality: 'Россия',
-    photo: 'https://placehold.co/600x400/blue/white?text=Coach',
-    biography: 'Опытный тренер с большим международным опытом.',
-    specializations: ['Тактика', 'Физическая подготовка', 'Работа с молодежью'],
-    achievements: ['Чемпион России 2020', 'Кубок России 2019'],
+    photo: 'https://placehold.co/300x300/blue/white?text=Сергей+Михайлов',
+    specializations: ['Тактика', 'Физическая подготовка'],
+    biography: 'Опытный тренер с международным опытом работы.',
+    achievements: ['Чемпион России 2020', 'Финалист Кубка России 2021'],
     socialLinks: {
-      instagram: 'https://instagram.com/sivanov',
-      twitter: 'https://twitter.com/sivanov',
+      instagram: 'https://instagram.com/smikhailov',
+      twitter: 'https://twitter.com/smikhailov',
+      vk: ''
     },
-    isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-  },
+    isActive: true
+  }
 ];
 
-// Функция для загрузки данных из localStorage
-const loadFromStorage = <T>(key: string, initialData: T[]): T[] => {
+// Функция для загрузки данных из хранилища
+const loadDataFromStorage = <T>(storageKey: string, initialData: T[]): T[] => {
+  console.log(`Загрузка данных из хранилища по ключу ${storageKey}`);
   try {
-    const saved = localStorage.getItem(key);
-    const data = saved ? JSON.parse(saved) : initialData;
-    
-    // Сохраняем данные обратно в localStorage, чтобы убедиться,
-    // что начальные данные сохранены, если их там не было
-    if (!saved) {
-      localStorage.setItem(key, JSON.stringify(initialData));
+    // Сначала пытаемся получить из localStorage
+    const localData = localStorage.getItem(storageKey);
+    if (localData) {
+      console.log(`Данные найдены в localStorage: ${localData.substring(0, 100)}...`);
+      return JSON.parse(localData);
     }
     
-    return data;
+    // Затем пытаемся получить из sessionStorage
+    const sessionData = sessionStorage.getItem(storageKey);
+    if (sessionData) {
+      console.log(`Данные найдены в sessionStorage: ${sessionData.substring(0, 100)}...`);
+      return JSON.parse(sessionData);
+    }
+    
+    console.log(`Данные не найдены, используем начальные данные`);
+    
+    // Если данных нет ни в одном хранилище, сохраняем начальные данные
+    saveDataToStorage(storageKey, initialData);
+    return initialData;
   } catch (error) {
-    console.error(`Ошибка при загрузке ${key}:`, error);
+    console.error(`Ошибка при загрузке данных из хранилища (${storageKey}):`, error);
+    // В случае ошибки также сохраняем начальные данные
+    saveDataToStorage(storageKey, initialData);
     return initialData;
   }
 };
 
-// Функция для сохранения данных в localStorage
-const saveToStorage = <T>(key: string, data: T[]): void => {
+// Функция для сохранения данных в хранилище
+const saveDataToStorage = <T>(storageKey: string, data: T[]): void => {
+  console.log(`Сохранение данных в хранилище по ключу ${storageKey}`);
   try {
-    localStorage.setItem(key, JSON.stringify(data));
+    const serializedData = JSON.stringify(data);
     
-    // Отправляем кастомное событие для синхронизации
-    const eventName = key === STORAGE_KEYS.PLAYERS ? EVENTS.PLAYERS_UPDATED : EVENTS.COACHES_UPDATED;
+    // Сохраняем в оба хранилища для надежности
+    localStorage.setItem(storageKey, serializedData);
+    sessionStorage.setItem(storageKey, serializedData);
+    
+    // Для синхронизации между вкладками отправляем событие
+    const eventName = storageKey === STORAGE_KEYS.PLAYERS ? 'playersUpdated' : 'coachesUpdated';
     window.dispatchEvent(new CustomEvent(eventName, { detail: data }));
     
-    // Для отладки
-    console.log(`Данные ${key} сохранены:`, data);
-    
-    // Установка cookie для сохранения данных на стороне клиента
-    document.cookie = `${key}Updated=${Date.now()};path=/;max-age=31536000`;
+    console.log(`Данные успешно сохранены в хранилище (${storageKey})`);
   } catch (error) {
-    console.error(`Ошибка при сохранении ${key}:`, error);
+    console.error(`Ошибка при сохранении данных в хранилище (${storageKey}):`, error);
   }
 };
 
+// Инициализация данных при загрузке модуля
+(function initializeData() {
+  console.log('Инициализация данных при загрузке модуля useData');
+  globalPlayers = loadDataFromStorage<Player>(STORAGE_KEYS.PLAYERS, initialPlayers);
+  globalCoaches = loadDataFromStorage<Coach>(STORAGE_KEYS.COACHES, initialCoaches);
+})();
+
+// Хук для работы с игроками
 export const usePlayers = () => {
-  const [players, setPlayers] = useState<Player[]>(() => 
-    loadFromStorage(STORAGE_KEYS.PLAYERS, initialPlayers)
-  );
-
-  // Проверка данных при инициализации и восстановление данных при необходимости
+  const [players, setPlayers] = useState<Player[]>(globalPlayers);
+  
+  // При первой загрузке обновляем глобальные данные
   useEffect(() => {
-    // Если данных нет или они пусты, используем начальные данные
-    if (!players.length) {
-      console.log('Игроки не найдены, использую начальные данные');
-      setPlayers(initialPlayers);
-      saveToStorage(STORAGE_KEYS.PLAYERS, initialPlayers);
-    }
-  }, []);
-
-  // Слушаем обновления от других компонентов
-  useEffect(() => {
-    const handlePlayersUpdate = (e: CustomEvent) => {
-      console.log('Получено событие обновления игроков:', e.detail);
-      setPlayers(e.detail);
-    };
-
-    window.addEventListener(EVENTS.PLAYERS_UPDATED, handlePlayersUpdate as EventListener);
-    return () => window.removeEventListener(EVENTS.PLAYERS_UPDATED, handlePlayersUpdate as EventListener);
-  }, []);
-
-  // Сохраняем изменения в localStorage при изменении данных
-  useEffect(() => {
-    saveToStorage(STORAGE_KEYS.PLAYERS, players);
-  }, [players]);
-
-  // Пересохраняем данные при загрузке страницы
-  useEffect(() => {
-    const handlePageLoad = () => {
-      console.log('Страница загружена, сохраняю данные игроков');
-      saveToStorage(STORAGE_KEYS.PLAYERS, players);
-    };
-
-    window.addEventListener('load', handlePageLoad);
-    return () => window.removeEventListener('load', handlePageLoad);
-  }, [players]);
-
-  const addPlayer = (player: Omit<Player, 'id' | 'createdAt' | 'updatedAt'>) => {
-    const newPlayer = { 
-      ...player, 
-      id: Date.now().toString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    } as Player;
+    console.log('usePlayers: инициализация хука');
     
-    setPlayers(prev => [...prev, newPlayer]);
-    // Принудительное сохранение
-    setTimeout(() => {
-      saveToStorage(STORAGE_KEYS.PLAYERS, [...players, newPlayer]);
-    }, 100);
+    // Обновляем состояние из глобальных данных
+    setPlayers(globalPlayers);
+    
+    // Слушаем события обновления игроков
+    const handlePlayersUpdate = (e: CustomEvent) => {
+      console.log('usePlayers: получено событие обновления игроков', e.detail);
+      setPlayers(e.detail);
+      globalPlayers = e.detail;
+    };
+    
+    // Слушаем события изменения localStorage
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEYS.PLAYERS && e.newValue) {
+        const updatedPlayers = JSON.parse(e.newValue);
+        setPlayers(updatedPlayers);
+        globalPlayers = updatedPlayers;
+      }
+    };
+    
+    window.addEventListener('playersUpdated', handlePlayersUpdate as EventListener);
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Функция очистки при размонтировании
+    return () => {
+      window.removeEventListener('playersUpdated', handlePlayersUpdate as EventListener);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+  
+  // Функция для добавления нового игрока
+  const addPlayer = (player: Omit<Player, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const newPlayer: Player = {
+      ...player,
+      id: uuidv4(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      isActive: player.isActive === undefined ? true : player.isActive
+    };
+    
+    const updatedPlayers = [...players, newPlayer];
+    setPlayers(updatedPlayers);
+    globalPlayers = updatedPlayers;
+    saveDataToStorage(STORAGE_KEYS.PLAYERS, updatedPlayers);
     
     return newPlayer;
   };
-
-  const updatePlayer = (player: Player) => {
-    const updatedPlayer = {
-      ...player,
-      updatedAt: new Date().toISOString()
-    };
+  
+  // Функция для обновления игрока
+  const updatePlayer = (id: string, playerData: Partial<Player>) => {
+    const updatedPlayers = players.map(player => 
+      player.id === id 
+        ? { 
+            ...player, 
+            ...playerData, 
+            updatedAt: new Date().toISOString() 
+          } 
+        : player
+    );
     
-    const updatedPlayers = players.map(p => p.id === player.id ? updatedPlayer : p);
     setPlayers(updatedPlayers);
-    
-    // Принудительное сохранение
-    setTimeout(() => {
-      saveToStorage(STORAGE_KEYS.PLAYERS, updatedPlayers);
-    }, 100);
+    globalPlayers = updatedPlayers;
+    saveDataToStorage(STORAGE_KEYS.PLAYERS, updatedPlayers);
   };
-
+  
+  // Функция для удаления игрока
   const deletePlayer = (id: string) => {
-    const filteredPlayers = players.filter(p => p.id !== id);
-    setPlayers(filteredPlayers);
-    
-    // Принудительное сохранение
-    setTimeout(() => {
-      saveToStorage(STORAGE_KEYS.PLAYERS, filteredPlayers);
-    }, 100);
+    const updatedPlayers = players.filter(player => player.id !== id);
+    setPlayers(updatedPlayers);
+    globalPlayers = updatedPlayers;
+    saveDataToStorage(STORAGE_KEYS.PLAYERS, updatedPlayers);
   };
-
-  return {
-    players,
-    addPlayer,
-    updatePlayer,
-    deletePlayer,
+  
+  // Функция для форсированного обновления данных из хранилища
+  const refreshPlayers = () => {
+    const refreshedPlayers = loadDataFromStorage<Player>(STORAGE_KEYS.PLAYERS, initialPlayers);
+    setPlayers(refreshedPlayers);
+    globalPlayers = refreshedPlayers;
+    return refreshedPlayers;
   };
+  
+  return { players, addPlayer, updatePlayer, deletePlayer, refreshPlayers };
 };
 
+// Хук для работы с тренерами
 export const useCoaches = () => {
-  const [coaches, setCoaches] = useState<Coach[]>(() => 
-    loadFromStorage(STORAGE_KEYS.COACHES, initialCoaches)
-  );
-
-  // Проверка данных при инициализации и восстановление данных при необходимости
+  const [coaches, setCoaches] = useState<Coach[]>(globalCoaches);
+  
+  // При первой загрузке обновляем глобальные данные
   useEffect(() => {
-    // Если данных нет или они пусты, используем начальные данные
-    if (!coaches.length) {
-      console.log('Тренеры не найдены, использую начальные данные');
-      setCoaches(initialCoaches);
-      saveToStorage(STORAGE_KEYS.COACHES, initialCoaches);
-    }
-  }, []);
-
-  // Слушаем обновления от других компонентов
-  useEffect(() => {
+    console.log('useCoaches: инициализация хука');
+    
+    // Обновляем состояние из глобальных данных
+    setCoaches(globalCoaches);
+    
+    // Слушаем события обновления тренеров
     const handleCoachesUpdate = (e: CustomEvent) => {
-      console.log('Получено событие обновления тренеров:', e.detail);
+      console.log('useCoaches: получено событие обновления тренеров', e.detail);
       setCoaches(e.detail);
+      globalCoaches = e.detail;
     };
-
-    window.addEventListener(EVENTS.COACHES_UPDATED, handleCoachesUpdate as EventListener);
-    return () => window.removeEventListener(EVENTS.COACHES_UPDATED, handleCoachesUpdate as EventListener);
+    
+    // Слушаем события изменения localStorage
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEYS.COACHES && e.newValue) {
+        const updatedCoaches = JSON.parse(e.newValue);
+        setCoaches(updatedCoaches);
+        globalCoaches = updatedCoaches;
+      }
+    };
+    
+    window.addEventListener('coachesUpdated', handleCoachesUpdate as EventListener);
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Функция очистки при размонтировании
+    return () => {
+      window.removeEventListener('coachesUpdated', handleCoachesUpdate as EventListener);
+      window.removeEventListener('storage', handleStorageChange);
+    };
   }, []);
-
-  // Сохраняем изменения в localStorage при изменении данных
-  useEffect(() => {
-    saveToStorage(STORAGE_KEYS.COACHES, coaches);
-  }, [coaches]);
-
-  // Пересохраняем данные при загрузке страницы
-  useEffect(() => {
-    const handlePageLoad = () => {
-      console.log('Страница загружена, сохраняю данные тренеров');
-      saveToStorage(STORAGE_KEYS.COACHES, coaches);
-    };
-
-    window.addEventListener('load', handlePageLoad);
-    return () => window.removeEventListener('load', handlePageLoad);
-  }, [coaches]);
-
+  
+  // Функция для добавления нового тренера
   const addCoach = (coach: Omit<Coach, 'id' | 'createdAt' | 'updatedAt'>) => {
-    const newCoach = { 
-      ...coach, 
-      id: Date.now().toString(),
+    const newCoach: Coach = {
+      ...coach,
+      id: uuidv4(),
       createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    } as Coach;
+      updatedAt: new Date().toISOString(),
+      isActive: coach.isActive === undefined ? true : coach.isActive
+    };
     
-    setCoaches(prev => [...prev, newCoach]);
-    
-    // Принудительное сохранение
-    setTimeout(() => {
-      saveToStorage(STORAGE_KEYS.COACHES, [...coaches, newCoach]);
-    }, 100);
+    const updatedCoaches = [...coaches, newCoach];
+    setCoaches(updatedCoaches);
+    globalCoaches = updatedCoaches;
+    saveDataToStorage(STORAGE_KEYS.COACHES, updatedCoaches);
     
     return newCoach;
   };
-
-  const updateCoach = (coach: Coach) => {
-    const updatedCoach = {
-      ...coach,
-      updatedAt: new Date().toISOString()
-    };
+  
+  // Функция для обновления тренера
+  const updateCoach = (id: string, coachData: Partial<Coach>) => {
+    const updatedCoaches = coaches.map(coach => 
+      coach.id === id 
+        ? { 
+            ...coach, 
+            ...coachData, 
+            updatedAt: new Date().toISOString() 
+          } 
+        : coach
+    );
     
-    const updatedCoaches = coaches.map(c => c.id === coach.id ? updatedCoach : c);
     setCoaches(updatedCoaches);
-    
-    // Принудительное сохранение
-    setTimeout(() => {
-      saveToStorage(STORAGE_KEYS.COACHES, updatedCoaches);
-    }, 100);
+    globalCoaches = updatedCoaches;
+    saveDataToStorage(STORAGE_KEYS.COACHES, updatedCoaches);
   };
-
+  
+  // Функция для удаления тренера
   const deleteCoach = (id: string) => {
-    const filteredCoaches = coaches.filter(c => c.id !== id);
-    setCoaches(filteredCoaches);
-    
-    // Принудительное сохранение
-    setTimeout(() => {
-      saveToStorage(STORAGE_KEYS.COACHES, filteredCoaches);
-    }, 100);
+    const updatedCoaches = coaches.filter(coach => coach.id !== id);
+    setCoaches(updatedCoaches);
+    globalCoaches = updatedCoaches;
+    saveDataToStorage(STORAGE_KEYS.COACHES, updatedCoaches);
   };
-
-  return {
-    coaches,
-    addCoach,
-    updateCoach,
-    deleteCoach,
+  
+  // Функция для форсированного обновления данных из хранилища
+  const refreshCoaches = () => {
+    const refreshedCoaches = loadDataFromStorage<Coach>(STORAGE_KEYS.COACHES, initialCoaches);
+    setCoaches(refreshedCoaches);
+    globalCoaches = refreshedCoaches;
+    return refreshedCoaches;
   };
+  
+  return { coaches, addCoach, updateCoach, deleteCoach, refreshCoaches };
 }; 
