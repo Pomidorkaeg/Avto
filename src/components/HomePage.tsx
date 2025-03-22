@@ -3,6 +3,7 @@ import { usePlayers } from '../hooks/useData';
 import { useCoaches } from '../hooks/useData';
 import { Player } from '../types/player';
 import { Coach } from '../types/coach';
+import { useNavigate } from 'react-router-dom';
 
 // Ключи для хранения данных
 const STORAGE_KEYS = {
@@ -19,6 +20,7 @@ const HomePage: React.FC = () => {
   const [players, setPlayers] = useState<Player[]>(hookPlayers);
   const [coaches, setCoaches] = useState<Coach[]>(hookCoaches);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   // Обновляем состояние при изменении данных из хуков
   useEffect(() => {
@@ -129,96 +131,174 @@ const HomePage: React.FC = () => {
     );
   }
 
+  const tournaments = [
+    {
+      id: 1,
+      name: 'Чемпионат Абхазии 2024',
+      matches: [
+        {
+          id: 1,
+          date: '15 марта 2024',
+          time: '15:00',
+          homeTeam: 'ФК Гудаут',
+          awayTeam: 'Нарт Сухум',
+          link: '#'
+        },
+        {
+          id: 2,
+          date: '22 марта 2024',
+          time: '16:30',
+          homeTeam: 'Динамо Сухум',
+          awayTeam: 'ФК Гудаут',
+          link: '#'
+        },
+        {
+          id: 3,
+          date: '29 марта 2024',
+          time: '14:00',
+          homeTeam: 'ФК Гудаут',
+          awayTeam: 'Афон',
+          link: '#'
+        }
+      ],
+      link: '#'
+    },
+    {
+      id: 2,
+      name: 'Кубок Абхазии 2024',
+      matches: [
+        {
+          id: 4,
+          date: '5 апреля 2024',
+          time: '15:30',
+          homeTeam: 'ФК Гудаут',
+          awayTeam: 'Рица',
+          link: '#'
+        },
+        {
+          id: 5,
+          date: '12 апреля 2024',
+          time: '16:00',
+          homeTeam: 'Гагра',
+          awayTeam: 'ФК Гудаут',
+          link: '#'
+        }
+      ],
+      link: '#'
+    },
+    {
+      id: 3,
+      name: 'Товарищеские матчи',
+      matches: [
+        {
+          id: 6,
+          date: '19 апреля 2024',
+          time: '17:00',
+          homeTeam: 'ФК Гудаут',
+          awayTeam: 'Сборная Гудаутского района',
+          link: '#'
+        },
+        {
+          id: 7,
+          date: '26 апреля 2024',
+          time: '15:30',
+          homeTeam: 'ФК Гудаут',
+          awayTeam: 'Сборная ветеранов',
+          link: '#'
+        }
+      ],
+      link: '#'
+    }
+  ];
+
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="text-center mb-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-2">ФК Гудаут</h1>
-        <p className="text-xl text-gray-600">Профессиональная футбольная команда</p>
+      <div className="text-center mb-12">
+        <h1 className="text-5xl font-bold text-gray-900 mb-4">ФК Гудаут</h1>
+        <p className="text-2xl text-gray-600 mb-8">Профессиональная футбольная команда</p>
       </div>
       
-      <h1 className="text-4xl font-bold mb-8">Турнирные таблицы</h1>
+      <h2 className="text-3xl font-bold mb-8 text-center">Турнирные таблицы</h2>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {players.length === 0 ? (
-          <div className="col-span-3 text-center p-8">
-            <p className="text-xl text-gray-500">Нет данных об игроках</p>
-          </div>
-        ) : (
-          players.map(player => (
-            <div key={player.id} className="bg-white rounded-lg shadow-md overflow-hidden">
-              <img
-                src={player.photo || 'https://placehold.co/600x400/orange/white?text=Нет+фото'}
-                alt={player.name}
-                className="w-full h-48 object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = 'https://placehold.co/600x400/orange/white?text=Ошибка+фото';
-                }}
-              />
-              <div className="p-4">
-                <h2 className="text-xl font-semibold mb-2">{player.name}</h2>
-                <p className="text-gray-600 mb-2">{player.position} #{player.number}</p>
-                <p className="text-gray-600 mb-2">Возраст: {player.age}</p>
-                <p className="text-gray-600 mb-2">Рост: {player.height} см</p>
-                <p className="text-gray-600 mb-2">Вес: {player.weight} кг</p>
-                <p className="text-gray-600 mb-2">Национальность: {player.nationality}</p>
-                
-                {player.stats && (
-                  <div className="mt-4">
-                    <h3 className="font-semibold mb-2">Статистика:</h3>
-                    <p>Игры: {player.stats.games}</p>
-                    <p>Голы: {player.stats.goals}</p>
-                    <p>Передачи: {player.stats.assists}</p>
-                    <p>Желтые карточки: {player.stats.yellowCards}</p>
-                    <p>Красные карточки: {player.stats.redCards}</p>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+        {players.map((player) => (
+          <div key={player.id} className="bg-white rounded-lg shadow-lg p-6">
+            <h3 className="text-2xl font-bold mb-4 text-gray-900">{player.name}</h3>
+            <div className="space-y-4">
+              {player.stats && (
+                <>
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-gray-900">Игры:</span>
+                    <span className="font-medium text-gray-900">{player.stats.games}</span>
                   </div>
-                )}
-              </div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-gray-900">Голы:</span>
+                    <span className="font-medium text-gray-900">{player.stats.goals}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-gray-900">Передачи:</span>
+                    <span className="font-medium text-gray-900">{player.stats.assists}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-gray-900">Желтые карточки:</span>
+                    <span className="font-medium text-gray-900">{player.stats.yellowCards}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold text-gray-900">Красные карточки:</span>
+                    <span className="font-medium text-gray-900">{player.stats.redCards}</span>
+                  </div>
+                </>
+              )}
             </div>
-          ))
-        )}
+          </div>
+        ))}
       </div>
 
-      <div className="mt-12">
-        <h2 className="text-3xl font-bold mb-6">Тренерский штаб</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {coaches.length === 0 ? (
-            <div className="col-span-3 text-center p-8">
-              <p className="text-xl text-gray-500">Нет данных о тренерах</p>
-            </div>
-          ) : (
-            coaches.map(coach => (
-              <div key={coach.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h2 className="text-2xl font-bold mb-6 text-gray-900">Игроки</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {players.map((player) => (
+              <div key={player.id} className="text-center">
                 <img
-                  src={coach.photo || 'https://placehold.co/600x400/blue/white?text=Нет+фото'}
-                  alt={coach.name}
-                  className="w-full h-48 object-cover"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.src = 'https://placehold.co/600x400/blue/white?text=Ошибка+фото';
-                  }}
+                  src={player.photo}
+                  alt={player.name}
+                  className="w-24 h-24 rounded-full mx-auto mb-2 object-cover"
                 />
-                <div className="p-4">
-                  <h2 className="text-xl font-semibold mb-2">{coach.name}</h2>
-                  <p className="text-gray-600 mb-2">{coach.position}</p>
-                  <p className="text-gray-600 mb-2">Возраст: {coach.age}</p>
-                  <p className="text-gray-600 mb-2">Опыт: {coach.experience} лет</p>
-                  <p className="text-gray-600 mb-2">Национальность: {coach.nationality}</p>
-                  
-                  {coach.specializations && coach.specializations.length > 0 && (
-                    <div className="mt-4">
-                      <h3 className="font-semibold mb-2">Специализации:</h3>
-                      <ul className="list-disc list-inside">
-                        {coach.specializations.map((spec, index) => (
-                          <li key={index}>{spec}</li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-                </div>
+                <p className="font-medium text-gray-900">{player.name}</p>
+                <p className="text-sm text-gray-600">{player.position}</p>
               </div>
-            ))
-          )}
+            ))}
+          </div>
+          <button
+            onClick={() => navigate('/players')}
+            className="mt-6 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200"
+          >
+            Все игроки
+          </button>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-lg p-6">
+          <h2 className="text-2xl font-bold mb-6 text-gray-900">Тренеры</h2>
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {coaches.map((coach) => (
+              <div key={coach.id} className="text-center">
+                <img
+                  src={coach.photo}
+                  alt={coach.name}
+                  className="w-24 h-24 rounded-full mx-auto mb-2 object-cover"
+                />
+                <p className="font-medium text-gray-900">{coach.name}</p>
+                <p className="text-sm text-gray-600">{coach.position}</p>
+              </div>
+            ))}
+          </div>
+          <button
+            onClick={() => navigate('/coaches')}
+            className="mt-6 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors duration-200"
+          >
+            Все тренеры
+          </button>
         </div>
       </div>
     </div>
