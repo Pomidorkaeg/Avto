@@ -44,7 +44,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   // Для корректной работы при открытии файла напрямую
-  base: '/admin/',
+  base: '/Avto/',
   // Добавляем оптимизации для более быстрой разработки
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom'],
