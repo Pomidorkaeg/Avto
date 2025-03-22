@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link, Outlet } from 'react-router-dom';
 import { Users, Trophy, Settings, LogOut } from 'lucide-react';
@@ -11,7 +10,7 @@ const AdminDashboard = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center">
-              <span className="text-white font-bold text-xl">ФК Сибирь Админ</span>
+              <span className="text-white font-bold text-xl">ФК Гудаут Админ</span>
             </div>
             <div>
               <Link 

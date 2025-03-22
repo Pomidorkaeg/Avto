@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Users, Calendar, Trophy } from 'lucide-react';
@@ -57,7 +56,7 @@ const AdminHome = () => {
                 <span className="text-lg font-bold">12.08.2024</span>
               </div>
               <div className="text-sm text-gray-500">
-                ФК Сибирь - ФК Спартак
+                Гудаута - ФК Спартак
               </div>
             </div>
           </CardContent>

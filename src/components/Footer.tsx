@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Instagram, Facebook, Twitter, MapPin, Phone, Mail } from 'lucide-react';
@@ -9,7 +8,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-4">ФК СИБИРЬ</h3>
+            <h3 className="text-xl font-bold mb-4">ФК ГУДАУТ</h3>
             <p className="text-white/80 mb-4">
               Футбольный клуб с богатой историей и традициями, стремящийся к новым победам и достижениям.
             </p>
@@ -88,7 +87,7 @@ const Footer = () => {
         </div>
         
         <div className="border-t border-white/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-white/80">© {new Date().getFullYear()} ФК Сибирь. Все права защищены.</p>
+          <p className="text-white/80">© {new Date().getFullYear()} ФК Гудаут. Все права защищены.</p>
           <div className="mt-4 md:mt-0">
             <ul className="flex space-x-6">
               <li>

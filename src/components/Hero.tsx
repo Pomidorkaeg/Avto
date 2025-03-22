@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -19,7 +18,7 @@ const Hero = () => {
       <div className="relative z-20 container mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center text-center">
         <div className="animate-slide-up">
           <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
-            ФК <span className="text-fc-yellow">СИБИРЬ</span>
+            ФК <span className="text-fc-yellow">ГУДАУТ</span>
           </h1>
           
           <p className="text-xl md:text-2xl text-white/90 max-w-3xl mx-auto mb-8">

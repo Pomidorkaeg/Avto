@@ -1,17 +1,28 @@
-
 export interface Player {
   id: string;
   name: string;
   position: string;
   number: number;
-  birthDate: string;
+  age: number;
   height: number;
   weight: number;
   nationality: string;
-  image: string;
-  matches: number;
-  goals: number;
-  assists: number;
-  yellowCards: number;
-  redCards: number;
+  photo: string;
+  stats: {
+    games: number;
+    goals: number;
+    assists: number;
+    yellowCards: number;
+    redCards: number;
+  };
+  biography: string;
+  achievements: string[];
+  socialLinks: {
+    instagram?: string;
+    twitter?: string;
+    vk?: string;
+  };
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
 }

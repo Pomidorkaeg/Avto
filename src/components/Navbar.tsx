@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
@@ -49,7 +48,7 @@ const Navbar = () => {
               className="flex items-center space-x-2"
               onClick={() => setIsMenuOpen(false)}
             >
-              <span className="text-fc-green font-bold text-xl">ФК СИБИРЬ</span>
+              <span className="text-fc-green font-bold text-xl">ФК ГУДАУТ</span>
             </Link>
           </div>
           

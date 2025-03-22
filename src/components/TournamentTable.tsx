@@ -80,7 +80,7 @@ const TournamentTable: React.FC<TournamentTableProps> = ({
   
   // Sample data for preview (this would normally come from the API)
   const sampleData: TournamentData = {
-    title: "Кубок среди любительских команд МОО СФФ «Сибирь» сезона 2024 года",
+    title: "Кубок среди любительских команд МОО СФФ «Гудаута» сезона 2024 года",
     season: "2024",
     lastUpdated: "15.03.2024",
     teams: [
