@@ -20,7 +20,7 @@ export const fetchPlayers = async () => {
     }));
   } catch (error) {
     console.error('Error getting players:', error);
-    return [];
+    throw error; // Пробрасываем ошибку для обработки в компоненте
   }
 };
 
@@ -46,8 +46,16 @@ export const getPlayer = async (id) => {
 export const updatePlayer = async (player) => {
   try {
     const { id, ...playerData } = player;
+    // Если id не существует, используем setDoc вместо updateDoc
+    if (!id) {
+      throw new Error('Player ID is required for update');
+    }
+    
     const playerRef = doc(db, 'players', id);
-    await updateDoc(playerRef, playerData);
+    // Используем setDoc с merge: true для обеспечения обновления
+    await setDoc(playerRef, playerData, { merge: true });
+    
+    console.log('Player updated successfully:', id);
     return {
       id,
       ...playerData
@@ -60,7 +68,12 @@ export const updatePlayer = async (player) => {
 
 export const deletePlayer = async (id) => {
   try {
+    if (!id) {
+      throw new Error('Player ID is required for deletion');
+    }
+    
     await deleteDoc(doc(db, 'players', id));
+    console.log('Player deleted successfully:', id);
     return id;
   } catch (error) {
     console.error('Error deleting player:', error);
@@ -70,11 +83,27 @@ export const deletePlayer = async (id) => {
 
 export const createPlayer = async (playerData) => {
   try {
-    const docRef = await addDoc(collection(db, 'players'), playerData);
-    return {
-      id: docRef.id,
-      ...playerData
-    };
+    // Проверяем, что данные игрока не пустые
+    if (!playerData || Object.keys(playerData).length === 0) {
+      throw new Error('Player data is required');
+    }
+    
+    // Если у игрока уже есть ID, используем setDoc
+    if (playerData.id) {
+      const playerRef = doc(db, 'players', playerData.id);
+      const { id, ...data } = playerData;
+      await setDoc(playerRef, data);
+      console.log('Player created with existing ID:', playerData.id);
+      return playerData;
+    } else {
+      // Иначе используем addDoc для создания нового документа
+      const docRef = await addDoc(collection(db, 'players'), playerData);
+      console.log('Player created with new ID:', docRef.id);
+      return {
+        id: docRef.id,
+        ...playerData
+      };
+    }
   } catch (error) {
     console.error('Error creating player:', error);
     throw error;
@@ -91,7 +120,7 @@ export const fetchCoaches = async () => {
     }));
   } catch (error) {
     console.error('Error getting coaches:', error);
-    return [];
+    throw error;
   }
 };
 
@@ -117,8 +146,15 @@ export const getCoach = async (id) => {
 export const updateCoach = async (coach) => {
   try {
     const { id, ...coachData } = coach;
+    if (!id) {
+      throw new Error('Coach ID is required for update');
+    }
+    
     const coachRef = doc(db, 'coaches', id);
-    await updateDoc(coachRef, coachData);
+    // Используем setDoc с merge: true для обеспечения обновления
+    await setDoc(coachRef, coachData, { merge: true });
+    
+    console.log('Coach updated successfully:', id);
     return {
       id,
       ...coachData
@@ -131,7 +167,12 @@ export const updateCoach = async (coach) => {
 
 export const deleteCoach = async (id) => {
   try {
+    if (!id) {
+      throw new Error('Coach ID is required for deletion');
+    }
+    
     await deleteDoc(doc(db, 'coaches', id));
+    console.log('Coach deleted successfully:', id);
     return id;
   } catch (error) {
     console.error('Error deleting coach:', error);
@@ -141,11 +182,27 @@ export const deleteCoach = async (id) => {
 
 export const createCoach = async (coachData) => {
   try {
-    const docRef = await addDoc(collection(db, 'coaches'), coachData);
-    return {
-      id: docRef.id,
-      ...coachData
-    };
+    // Проверяем, что данные тренера не пустые
+    if (!coachData || Object.keys(coachData).length === 0) {
+      throw new Error('Coach data is required');
+    }
+    
+    // Если у тренера уже есть ID, используем setDoc
+    if (coachData.id) {
+      const coachRef = doc(db, 'coaches', coachData.id);
+      const { id, ...data } = coachData;
+      await setDoc(coachRef, data);
+      console.log('Coach created with existing ID:', coachData.id);
+      return coachData;
+    } else {
+      // Иначе используем addDoc для создания нового документа
+      const docRef = await addDoc(collection(db, 'coaches'), coachData);
+      console.log('Coach created with new ID:', docRef.id);
+      return {
+        id: docRef.id,
+        ...coachData
+      };
+    }
   } catch (error) {
     console.error('Error creating coach:', error);
     throw error;
