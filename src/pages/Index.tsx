@@ -99,13 +99,16 @@ const Index = () => {
               <div>
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">Турниры и соревнования</h2>
                 <p className="text-gray-500 max-w-2xl">
-                  Следите за актуальными турнирными таблицами и результатами всех соревнований с участием нашего клуба
+                  Следите за успехами <span className="team-name">ФК Гудаута</span> в различных турнирах и соревнованиях
                 </p>
               </div>
               
-              <Link to="/tournaments" className="mt-4 md:mt-0 btn-secondary">
-                Все соревнования
-                <ArrowRight size={18} />
+              <Link
+                to="/tournaments"
+                className="tournament-button flex items-center gap-2 text-lg"
+              >
+                Турнирные таблицы
+                <ArrowRight className="w-5 h-5" />
               </Link>
             </div>
             
@@ -235,7 +238,7 @@ const Index = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-70"></div>
                     <div className="absolute bottom-4 left-4 right-4">
                       <div className="flex items-center text-white/90 text-sm mb-1">
-                        <NewspaperIcon size={14} className="mr-2" />
+                        <NewspaperIcon size={14} />
                         <span>{news.date}</span>
                       </div>
                     </div>
