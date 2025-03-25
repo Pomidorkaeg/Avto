@@ -8,8 +8,7 @@ export default defineConfig({
   base: '/Hdsffd/',
   server: {
     port: 3000,
-    open: true,
-    host: true
+    open: true
   },
   build: {
     outDir: "dist",
@@ -18,26 +17,14 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom'],
-          style: ['./src/styles/main.css']
+          vendor: ['react', 'react-dom']
         }
-      }
-    },
-    minify: 'terser',
-    terserOptions: {
-      compress: {
-        drop_console: true,
-        drop_debugger: true
       }
     }
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
-    },
-  },
-  optimizeDeps: {
-    include: ['react', 'react-dom'],
-    exclude: []
+      "@": path.resolve(__dirname, "./src")
+    }
   }
 });

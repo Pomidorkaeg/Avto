@@ -24,7 +24,7 @@ const initialPlayers: Player[] = [
     height: 184,
     weight: 78,
     nationality: 'Россия',
-    photo: 'https://placehold.co/300x300/orange/white?text=Иван+Петров',
+    image: 'https://placehold.co/300x300/orange/white?text=Иван+Петров',
     stats: {
       games: 30,
       goals: 15,
@@ -32,27 +32,26 @@ const initialPlayers: Player[] = [
       yellowCards: 4,
       redCards: 0
     },
-    biography: 'Талантливый нападающий с хорошим чувством гола.',
-    achievements: ['Лучший бомбардир сезона 2021', 'Игрок месяца (март 2022)'],
+    biography: 'Опытный нападающий с отличным чувством гола.',
+    achievements: ['Лучший бомбардир сезона 2022/23'],
     socialLinks: {
-      instagram: 'https://instagram.com/ivpetrov',
-      twitter: '',
-      vk: 'https://vk.com/ivpetrov'
+      instagram: 'https://instagram.com/player1',
+      vk: 'https://vk.com/player1'
     },
+    isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    isActive: true
   },
   {
     id: uuidv4(),
     name: 'Александр Иванов',
     position: 'Полузащитник',
     number: 8,
-    age: 27,
+    age: 28,
     height: 179,
     weight: 72,
     nationality: 'Россия',
-    photo: 'https://placehold.co/300x300/orange/white?text=Александр+Иванов',
+    image: 'https://placehold.co/300x300/orange/white?text=Александр+Иванов',
     stats: {
       games: 32,
       goals: 5,
@@ -60,16 +59,15 @@ const initialPlayers: Player[] = [
       yellowCards: 6,
       redCards: 1
     },
-    biography: 'Опытный полузащитник с отличным видением поля.',
-    achievements: ['Чемпион России 2020', 'Обладатель Кубка России 2022'],
+    biography: 'Талантливый полузащитник с отличным видением поля.',
+    achievements: ['Лучший ассистент сезона 2022/23'],
     socialLinks: {
-      instagram: 'https://instagram.com/aivanov',
-      twitter: 'https://twitter.com/aivanov',
-      vk: 'https://vk.com/aivanov'
+      instagram: 'https://instagram.com/player2',
+      vk: 'https://vk.com/player2'
     },
+    isActive: true,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    isActive: true
   }
 ];
 

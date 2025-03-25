@@ -7,14 +7,13 @@ export interface Player {
   height: number;
   weight: number;
   nationality: string;
-  photo: string;
-  stats: {
-    games: number;
-    goals: number;
-    assists: number;
-    yellowCards: number;
-    redCards: number;
-  };
+  birthDate: string;
+  image: string;
+  matches: number;
+  goals: number;
+  assists: number;
+  yellowCards: number;
+  redCards: number;
   biography: string;
   achievements: string[];
   socialLinks: {

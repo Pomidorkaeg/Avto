@@ -74,7 +74,7 @@ const PlayerManagement: React.FC = () => {
         {players.map(player => (
           <div key={player.id} className="border rounded-lg p-4">
             <img
-              src={player.photo}
+              src={player.image}
               alt={player.name}
               className="w-full h-48 object-cover rounded mb-4"
             />
