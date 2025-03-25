@@ -2,9 +2,9 @@ import React from 'react';
 import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import Index2 from './pages/Index2';
-import Matches from './pages/Matches';
-import AdminPanel from './components/AdminPanel';
+import Index2 from './pages/Index.tsx';
+import Matches from './pages/Matches.tsx';
+import AdminPanel from './components/AdminPanel.jsx';
 import './App.css';
 
 function App() {

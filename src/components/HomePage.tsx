@@ -256,7 +256,7 @@ const HomePage: React.FC = () => {
             {players.map((player) => (
               <div key={player.id} className="text-center">
                 <img
-                  src={player.photo}
+                  src={player.image}
                   alt={player.name}
                   className="w-24 h-24 rounded-full mx-auto mb-2 object-cover"
                 />

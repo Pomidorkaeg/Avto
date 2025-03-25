@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Plus, Search, Pencil, Trash, Save, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -7,6 +6,7 @@ import PlayerEditor from './PlayerEditor';
 import { getPlayersData, updatePlayer, deletePlayer, createPlayer } from '@/utils/playersData';
 import { Player } from '@/types/player';
 import { toast } from '@/components/ui/use-toast';
+import { v4 as uuidv4 } from 'uuid';
 
 const PlayersManagement = () => {
   const [players, setPlayers] = useState<Player[]>(getPlayersData());
@@ -45,20 +45,29 @@ const PlayersManagement = () => {
 
   const handleAddNew = () => {
     const newPlayer: Player = {
-      id: `player-${Date.now()}`,
+      id: uuidv4(),
       name: '',
-      position: 'Нападающий',
-      number: players.length + 1,
+      position: '',
+      number: 0,
       birthDate: '',
-      height: 180,
-      weight: 75,
-      nationality: 'Россия',
-      image: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1974&q=80',
-      matches: 0,
-      goals: 0,
-      assists: 0,
-      yellowCards: 0,
-      redCards: 0,
+      age: 0,
+      height: 0,
+      weight: 0,
+      nationality: '',
+      image: '',
+      biography: '',
+      achievements: [],
+      socialLinks: {},
+      stats: {
+        matches: 0,
+        goals: 0,
+        assists: 0,
+        yellowCards: 0,
+        redCards: 0
+      },
+      isActive: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     };
     setCurrentPlayer(newPlayer);
     setEditMode(true);
@@ -192,9 +201,9 @@ const PlayersManagement = () => {
                       {player.height} см, {player.weight} кг
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      <div className="flex items-center space-x-2">
-                        <span className="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">{player.matches} матчей</span>
-                        <span className="px-2 py-1 text-xs rounded bg-green-100 text-green-800">{player.goals} голов</span>
+                      <div className="flex flex-wrap gap-2 mt-2">
+                        <span className="px-2 py-1 text-xs rounded bg-blue-100 text-blue-800">{player.stats.matches} матчей</span>
+                        <span className="px-2 py-1 text-xs rounded bg-green-100 text-green-800">{player.stats.goals} голов</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">

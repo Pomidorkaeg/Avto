@@ -20,54 +20,56 @@ const initialPlayers: Player[] = [
     name: 'Иван Петров',
     position: 'Нападающий',
     number: 9,
+    birthDate: '1998-05-15',
     age: 25,
     height: 184,
     weight: 78,
     nationality: 'Россия',
     image: 'https://placehold.co/300x300/orange/white?text=Иван+Петров',
+    biography: 'Опытный нападающий с отличным чувством гола.',
+    achievements: ['Лучший бомбардир сезона 2022/23'],
+    socialLinks: {
+      instagram: 'https://instagram.com/player1',
+      twitter: 'https://twitter.com/player1'
+    },
     stats: {
-      games: 30,
+      matches: 30,
       goals: 15,
       assists: 7,
       yellowCards: 4,
       redCards: 0
     },
-    biography: 'Опытный нападающий с отличным чувством гола.',
-    achievements: ['Лучший бомбардир сезона 2022/23'],
-    socialLinks: {
-      instagram: 'https://instagram.com/player1',
-      vk: 'https://vk.com/player1'
-    },
     isActive: true,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   },
   {
     id: uuidv4(),
     name: 'Александр Иванов',
     position: 'Полузащитник',
     number: 8,
+    birthDate: '1995-08-12',
     age: 28,
     height: 179,
     weight: 72,
     nationality: 'Россия',
     image: 'https://placehold.co/300x300/orange/white?text=Александр+Иванов',
+    biography: 'Талантливый полузащитник с отличным видением поля.',
+    achievements: ['Лучший ассистент сезона 2022/23'],
+    socialLinks: {
+      instagram: 'https://instagram.com/player2',
+      twitter: 'https://twitter.com/player2'
+    },
     stats: {
-      games: 32,
+      matches: 32,
       goals: 5,
       assists: 12,
       yellowCards: 6,
       redCards: 1
     },
-    biography: 'Талантливый полузащитник с отличным видением поля.',
-    achievements: ['Лучший ассистент сезона 2022/23'],
-    socialLinks: {
-      instagram: 'https://instagram.com/player2',
-      vk: 'https://vk.com/player2'
-    },
     isActive: true,
     createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString()
   }
 ];
 
@@ -235,7 +237,7 @@ export const usePlayers = () => {
   
   // Функция для форсированного обновления данных из хранилища
   const refreshPlayers = () => {
-    const refreshedPlayers = loadDataFromStorage<Player>(STORAGE_KEYS.PLAYERS, initialPlayers);
+    const refreshedPlayers = loadDataFromStorage<Player>(STORAGE_KEYS.PLAYERS, players);
     setPlayers(refreshedPlayers);
     globalPlayers = refreshedPlayers;
     return refreshedPlayers;
@@ -333,4 +335,186 @@ export const useCoaches = () => {
   };
   
   return { coaches, addCoach, updateCoach, deleteCoach, refreshCoaches };
+};
+
+export const useData = () => {
+  const [players, setPlayers] = useState<Player[]>([
+    {
+      id: '1',
+      name: 'Иван Иванов',
+      position: 'Нападающий',
+      number: 9,
+      birthDate: '1995-03-15',
+      age: 28,
+      height: 185,
+      weight: 80,
+      nationality: 'Россия',
+      image: 'https://example.com/player1.jpg',
+      biography: 'Опытный нападающий с отличным чувством гола.',
+      achievements: ['Лучший бомбардир сезона 2022'],
+      socialLinks: {
+        instagram: 'https://instagram.com/ivanov',
+        twitter: 'https://twitter.com/ivanov'
+      },
+      stats: {
+        matches: 150,
+        goals: 75,
+        assists: 30,
+        yellowCards: 10,
+        redCards: 1
+      },
+      isActive: true,
+      createdAt: '2023-01-01T00:00:00Z',
+      updatedAt: '2023-01-01T00:00:00Z'
+    },
+    {
+      id: '2',
+      name: 'Петр Петров',
+      position: 'Полузащитник',
+      number: 8,
+      birthDate: '1997-06-22',
+      age: 26,
+      height: 178,
+      weight: 72,
+      nationality: 'Россия',
+      image: 'https://example.com/player2.jpg',
+      biography: 'Креативный полузащитник с отличным видением поля.',
+      achievements: ['Лучший ассистент сезона 2023'],
+      socialLinks: {
+        instagram: 'https://instagram.com/petrov',
+        facebook: 'https://facebook.com/petrov'
+      },
+      stats: {
+        matches: 120,
+        goals: 25,
+        assists: 45,
+        yellowCards: 8,
+        redCards: 0
+      },
+      isActive: true,
+      createdAt: '2023-01-01T00:00:00Z',
+      updatedAt: '2023-01-01T00:00:00Z'
+    }
+  ]);
+
+  const [coaches, setCoaches] = useState<Coach[]>(globalCoaches);
+  
+  // При первой загрузке обновляем глобальные данные
+  useEffect(() => {
+    console.log('useCoaches: инициализация хука');
+    
+    // Обновляем состояние из глобальных данных
+    setCoaches(globalCoaches);
+    
+    // Слушаем события обновления тренеров
+    const handleCoachesUpdate = (e: CustomEvent) => {
+      console.log('useCoaches: получено событие обновления тренеров', e.detail);
+      setCoaches(e.detail);
+      globalCoaches = e.detail;
+    };
+    
+    // Слушаем события изменения localStorage
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === STORAGE_KEYS.COACHES && e.newValue) {
+        const updatedCoaches = JSON.parse(e.newValue);
+        setCoaches(updatedCoaches);
+        globalCoaches = updatedCoaches;
+      }
+    };
+    
+    window.addEventListener('coachesUpdated', handleCoachesUpdate as EventListener);
+    window.addEventListener('storage', handleStorageChange);
+    
+    // Функция очистки при размонтировании
+    return () => {
+      window.removeEventListener('coachesUpdated', handleCoachesUpdate as EventListener);
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+  
+  // Функция для добавления нового игрока
+  const addPlayer = (player: Omit<Player, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const newPlayer: Player = {
+      ...player,
+      id: uuidv4(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    const updatedPlayers = [...players, newPlayer];
+    setPlayers(updatedPlayers);
+    return newPlayer;
+  };
+  
+  // Функция для обновления игрока
+  const updatePlayer = (id: string, playerData: Partial<Player>) => {
+    const updatedPlayers = players.map(player => 
+      player.id === id 
+        ? { 
+            ...player, 
+            ...playerData, 
+            updatedAt: new Date().toISOString() 
+          } 
+        : player
+    );
+    
+    setPlayers(updatedPlayers);
+  };
+  
+  // Функция для удаления игрока
+  const deletePlayer = (id: string) => {
+    const updatedPlayers = players.filter(player => player.id !== id);
+    setPlayers(updatedPlayers);
+  };
+  
+  // Функция для форсированного обновления данных игроков из хранилища
+  const refreshPlayers = () => {
+    const refreshedPlayers = loadDataFromStorage<Player>(STORAGE_KEYS.PLAYERS, players);
+    setPlayers(refreshedPlayers);
+    return refreshedPlayers;
+  };
+
+  // Функция для добавления нового тренера
+  const addCoach = (coach: Omit<Coach, 'id' | 'createdAt' | 'updatedAt'>) => {
+    const newCoach: Coach = {
+      ...coach,
+      id: uuidv4(),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    const updatedCoaches = [...coaches, newCoach];
+    setCoaches(updatedCoaches);
+    return newCoach;
+  };
+  
+  // Функция для обновления тренера
+  const updateCoach = (id: string, coachData: Partial<Coach>) => {
+    const updatedCoaches = coaches.map(coach => 
+      coach.id === id 
+        ? { 
+            ...coach, 
+            ...coachData, 
+            updatedAt: new Date().toISOString() 
+          } 
+        : coach
+    );
+    
+    setCoaches(updatedCoaches);
+  };
+  
+  // Функция для удаления тренера
+  const deleteCoach = (id: string) => {
+    const updatedCoaches = coaches.filter(coach => coach.id !== id);
+    setCoaches(updatedCoaches);
+  };
+  
+  // Функция для форсированного обновления данных тренеров из хранилища
+  const refreshCoaches = () => {
+    const refreshedCoaches = loadDataFromStorage<Coach>(STORAGE_KEYS.COACHES, coaches);
+    setCoaches(refreshedCoaches);
+    return refreshedCoaches;
+  };
+  
+  return { players, coaches, addPlayer, updatePlayer, deletePlayer, addCoach, updateCoach, deleteCoach, refreshPlayers, refreshCoaches };
 }; 

@@ -208,27 +208,30 @@ const PlayerManagement: React.FC = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Ссылки на соцсети</label>
+                <label className="block text-sm font-medium text-gray-700">Instagram</label>
                 <input
                   type="text"
-                  placeholder="Instagram"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                   value={editingPlayer?.socialLinks.instagram || ''}
                   onChange={(e) => setEditingPlayer({ ...editingPlayer!, socialLinks: { ...editingPlayer!.socialLinks, instagram: e.target.value } })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Twitter</label>
                 <input
                   type="text"
-                  placeholder="Twitter"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
                   value={editingPlayer?.socialLinks.twitter || ''}
                   onChange={(e) => setEditingPlayer({ ...editingPlayer!, socialLinks: { ...editingPlayer!.socialLinks, twitter: e.target.value } })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                 />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">Facebook</label>
                 <input
                   type="text"
-                  placeholder="VK"
-                  value={editingPlayer?.socialLinks.vk || ''}
-                  onChange={(e) => setEditingPlayer({ ...editingPlayer!, socialLinks: { ...editingPlayer!.socialLinks, vk: e.target.value } })}
-                  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                  value={editingPlayer?.socialLinks.facebook || ''}
+                  onChange={(e) => setEditingPlayer({ ...editingPlayer!, socialLinks: { ...editingPlayer!.socialLinks, facebook: e.target.value } })}
                 />
               </div>
               <div className="flex justify-end">

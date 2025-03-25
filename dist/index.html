@@ -1,134 +1,215 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FC Tournaments Hub</title>
-    <meta
-      name="description"
-      content="Футбольный клуб - турниры и соревнования"
-    />
-    <meta name="author" content="Lovable" />
-    <meta property="og:image" content="./og-image.png" />
-    <link
-      rel="icon"
-      href="/tournament-tables-hub1/assets/favicon.ico"
-      type="image/x-icon"
-    />
-
-    <!-- Предзагрузка критических ресурсов -->
-    <link rel="preload" href="./assets/index.css" as="style" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="preload"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-      as="style"
-    />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-    />
-
-    <!-- Inline CSS для мгновенной загрузки основных стилей -->
+    <title>ФК Гудаута</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <meta name="description" content="Официальный сайт ФК Гудаута">
+    <meta name="keywords" content="футбол, Гудаута, спорт, команда">
+    
+    <!-- Open Graph теги -->
+    <meta property="og:title" content="ФК Гудаута">
+    <meta property="og:description" content="Официальный сайт ФК Гудаута">
+    <meta property="og:image" content="path-to-your-logo.jpg">
+    <meta property="og:url" content="https://your-domain.com">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="data:image/x-icon;base64,AAABAAEAEBAAAAEAIABoBAAAFgAAACgAAAAQAAAAIAAAAAEAIAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAABMAAAA6wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAOsAAABMAAAA6wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA6wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8sLCz/MDAw/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP9QUFD/9/f3//f39/9QUFD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP9sbGz/+/v7////////////+/v7/2BgYP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP9sbGz/////////////////////////////////ZGRk/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP9QUFD/+/v7//////////////////////////////////v7+/9MTEz/AAAA/wAAAP8AAAD/AAAA/wAAAP8oKCj/9/f3////////////////////////////////////////////9/f3/ywsLP8AAAD/AAAA/wAAAP8AAAD/s7Oz//////////////////////////////////////////////////////+rq6v/AAAA/wAAAP8AAAD/AAAA//f39///////////////////////////////////////////////////////8/Pz/wAAAP8AAAD/AAAA/wAAAP/7+/v///////////////////////////////////////////////////////f39/8AAAD/AAAA/wAAAP8AAAD/r6+v///////////////////////7+/v///////////////////////////+3t7f/AAAA/wAAAP8AAAD/AAAA/yAgIP/X19f////////////39/f/bGxs/2hoaP/39/f////////////X19f/ICAg/wAAAP8AAAD/AAAA/wAAAP8AAAD/BAQE/0RERP9MTEz/FBQU/wAAAP8AAAD/GBgY/1BQUP9AQED/CAgI/wAAAP8AAAD/AAAA/wAAAOsAAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAOsAAABMAAAA6wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAP8AAAD/AAAA/wAAAOsAAABMgAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAEAAA==">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
     <style>
-      /* Базовые стили, чтобы страница выглядела завершенной сразу при загрузке */
+      :root {
+        --primary-color: #1e3c72;
+        --secondary-color: #2a5298;
+        --accent-color: #ffd700;
+        --text-light: #ffffff;
+        --card-bg: rgba(255, 255, 255, 0.95);
+      }
+
       body {
-        font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
-          Roboto, Helvetica, Arial, sans-serif;
         margin: 0;
         padding: 0;
-        background-color: #ffffff;
-        color: #333333;
-      }
-      #root {
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        color: var(--text-light);
         min-height: 100vh;
-        display: flex;
-        flex-direction: column;
-      }
-      .loading {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-        width: 100%;
-      }
-      .spinner {
-        width: 40px;
-        height: 40px;
-        border: 4px solid rgba(0, 128, 0, 0.2);
-        border-radius: 50%;
-        border-top-color: #008000;
-        animation: spin 1s linear infinite;
-      }
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
       }
 
-      /* Встроенные стили для имитации загруженной страницы */
-      .navbar {
-        background-color: #ffffff;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        padding: 1rem 0;
+      .header {
+        background: rgba(0, 0, 0, 0.2);
+        padding: 20px 0;
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+        -webkit-backdrop-filter: blur(10px);
+                backdrop-filter: blur(10px);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      }
+
+      .header-title {
+        font-size: 2.5rem;
+        text-align: center;
+        margin: 0;
+        color: var(--accent-color);
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      .nav-menu {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px 0;
+      }
+
+      .nav-button {
+        background: rgba(255, 255, 255, 0.1);
+        border: none;
+        padding: 12px 24px;
+        color: var(--text-light);
+        border-radius: 30px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 1rem;
+      }
+
+      .nav-button:hover {
+        background: var(--accent-color);
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      }
+
+      .team-section {
+        margin: 40px auto;
+        padding: 30px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 20px;
+        -webkit-backdrop-filter: blur(10px);
+                backdrop-filter: blur(10px);
+        max-width: 1200px;
+      }
+
+      .section-title {
+        color: var(--accent-color);
+        text-align: center;
+        font-size: 28px;
+        margin-bottom: 30px;
+        text-transform: uppercase;
+      }
+
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 25px;
+        padding: 20px;
+      }
+
+      .card {
+        background: var(--card-bg);
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+      }
+
+      .card-image {
+        width: 100%;
+        height: 250px;
+        -o-object-fit: cover;
+           object-fit: cover;
+      }
+
+      .card-content {
+        padding: 20px;
+      }
+
+      .card-title {
+        font-size: 1.5rem;
+        color: var(--primary-color);
+        margin-bottom: 10px;
+      }
+
+      .card-role {
+        color: #666;
+        font-size: 1rem;
+        margin-bottom: 10px;
+      }
+
+      .card-description {
+        color: #444;
+        font-size: 0.9rem;
+        line-height: 1.5;
+      }
+
+      .modal {
         position: fixed;
         top: 0;
         left: 0;
-        right: 0;
-        z-index: 100;
-      }
-
-      .content-placeholder {
-        margin-top: 80px;
-        padding: 1rem;
-        max-width: 1200px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      .hero-placeholder {
-        height: 400px;
-        background: linear-gradient(135deg, #1a472a, #2e7d32);
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.8);
+        display: none;
         justify-content: center;
-        color: white;
+        align-items: center;
+        z-index: 1000;
+      }
+
+      .modal.active {
+        display: flex;
+      }
+
+      .modal-content {
+        background: var(--card-bg);
+        padding: 30px;
+        border-radius: 15px;
+        max-width: 600px;
+        width: 90%;
+        position: relative;
+      }
+
+      .modal-close {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
         font-size: 24px;
-        margin-bottom: 2rem;
+        cursor: pointer;
+        color: #444;
+      }
+
+      @media (max-width: 768px) {
+        .header-title {
+          font-size: 2rem;
+        }
+
+        .nav-menu {
+          flex-direction: column;
+          align-items: center;
+        }
+
+        .team-section {
+          padding: 15px;
+          margin: 20px 10px;
+        }
+
+        .cards-grid {
+          grid-template-columns: 1fr;
+          gap: 15px;
+          padding: 10px;
+        }
       }
     </style>
-    <!-- Добавляем основной стиль без атрибута defer-->
-    <link rel="stylesheet" href="./assets/index.css" />
-    <script
-      type="module"
-      crossorigin
-      src="/tournament-tables-hub1/assets/index.js"
-    ></script>
-    <link
-      rel="stylesheet"
-      crossorigin
-      href="/tournament-tables-hub1/assets/index.css"
-    />
+    <script type="module" crossorigin src="/fdsf/assets/index-4077cc82.js"></script>
+    <link rel="stylesheet" href="/fdsf/assets/index-d0ab2edc.css">
   </head>
 
   <body>
-    <div id="root">
-      <!-- Статический контент-заполнитель для мгновенного визуального рендеринга -->
-      <div class="navbar"></div>
-      <div class="content-placeholder">
-        <div class="hero-placeholder">
-          <div class="loading">
-            <div class="spinner"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Загрузка React и React DOM -->
+    <div id="root"></div>
+    
   </body>
 </html>

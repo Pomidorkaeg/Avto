@@ -3,23 +3,25 @@ export interface Player {
   name: string;
   position: string;
   number: number;
+  birthDate: string;
   age: number;
   height: number;
   weight: number;
   nationality: string;
-  birthDate: string;
   image: string;
-  matches: number;
-  goals: number;
-  assists: number;
-  yellowCards: number;
-  redCards: number;
   biography: string;
   achievements: string[];
   socialLinks: {
     instagram?: string;
     twitter?: string;
-    vk?: string;
+    facebook?: string;
+  };
+  stats: {
+    matches: number;
+    goals: number;
+    assists: number;
+    yellowCards: number;
+    redCards: number;
   };
   isActive: boolean;
   createdAt: string;

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -150,68 +149,54 @@ const PlayerEditor: React.FC<PlayerEditorProps> = ({ player, onSave, onCancel })
             </div>
           </div>
           
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-2 gap-4 mb-6">
             <div>
-              <Label htmlFor="matches">Матчи</Label>
-              <Input 
-                id="matches" 
-                name="matches" 
-                type="number" 
-                value={formData.matches} 
-                onChange={handleChange}
-                min="0"
-                required
+              <label className="block text-sm font-medium text-gray-700">Матчи</label>
+              <input
+                type="number"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={formData.stats.matches}
+                onChange={(e) => setFormData({ ...formData, stats: { ...formData.stats, matches: parseInt(e.target.value) || 0 } })}
               />
             </div>
+
             <div>
-              <Label htmlFor="goals">Голы</Label>
-              <Input 
-                id="goals" 
-                name="goals" 
-                type="number" 
-                value={formData.goals} 
-                onChange={handleChange}
-                min="0"
-                required
+              <label className="block text-sm font-medium text-gray-700">Голы</label>
+              <input
+                type="number"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={formData.stats.goals}
+                onChange={(e) => setFormData({ ...formData, stats: { ...formData.stats, goals: parseInt(e.target.value) || 0 } })}
               />
             </div>
-          </div>
-          
-          <div className="grid grid-cols-3 gap-4">
+
             <div>
-              <Label htmlFor="assists">Передачи</Label>
-              <Input 
-                id="assists" 
-                name="assists" 
-                type="number" 
-                value={formData.assists} 
-                onChange={handleChange}
-                min="0"
-                required
+              <label className="block text-sm font-medium text-gray-700">Передачи</label>
+              <input
+                type="number"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={formData.stats.assists}
+                onChange={(e) => setFormData({ ...formData, stats: { ...formData.stats, assists: parseInt(e.target.value) || 0 } })}
               />
             </div>
+
             <div>
-              <Label htmlFor="yellowCards">Жёлтые карточки</Label>
-              <Input 
-                id="yellowCards" 
-                name="yellowCards" 
-                type="number" 
-                value={formData.yellowCards} 
-                onChange={handleChange}
-                min="0"
-                required
+              <label className="block text-sm font-medium text-gray-700">Желтые карточки</label>
+              <input
+                type="number"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={formData.stats.yellowCards}
+                onChange={(e) => setFormData({ ...formData, stats: { ...formData.stats, yellowCards: parseInt(e.target.value) || 0 } })}
               />
             </div>
+
             <div>
-              <Label htmlFor="redCards">Красные карточки</Label>
-              <Input 
-                id="redCards" 
-                name="redCards" 
-                type="number" 
-                value={formData.redCards} 
-                onChange={handleChange}
-                min="0"
-                required
+              <label className="block text-sm font-medium text-gray-700">Красные карточки</label>
+              <input
+                type="number"
+                className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                value={formData.stats.redCards}
+                onChange={(e) => setFormData({ ...formData, stats: { ...formData.stats, redCards: parseInt(e.target.value) || 0 } })}
               />
             </div>
           </div>

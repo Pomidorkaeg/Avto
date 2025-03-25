@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
-import App from './App'
+import App from './App.jsx'
 import './styles/main.css'
 
 // Improved rendering that ensures all elements are loaded before display
