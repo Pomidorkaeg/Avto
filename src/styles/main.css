@@ -16,6 +16,12 @@ body {
     min-height: 100vh;
 }
 
+#root {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 /* Анимированный хедер */
 .header {
     background: rgba(0, 0, 0, 0.2);

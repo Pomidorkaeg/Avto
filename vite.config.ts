@@ -1,49 +1,43 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
+import react from "@vitejs/plugin-react";
 import path from "path";
-import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig({
+  plugins: [react()],
+  base: '/Hdsffd/',
   server: {
-    host: "::",
-    port: 8080,
+    port: 3000,
+    open: true,
+    host: true
   },
   build: {
     outDir: "dist",
-    // Генерируем ресурсы с постоянными именами (без хешей) для простоты ссылок
+    emptyOutDir: true,
+    sourcemap: true,
     rollupOptions: {
       output: {
-        entryFileNames: 'assets/[name].js',
-        chunkFileNames: 'assets/[name].js',
-        assetFileNames: 'assets/[name].[ext]'
+        manualChunks: {
+          vendor: ['react', 'react-dom'],
+          style: ['./src/styles/main.css']
+        }
       }
     },
-    // Оптимизируем сборку для быстрой загрузки
-    minify: true,
-    cssMinify: true,
-    target: 'es2015',  // Целевые современные браузеры для уменьшения размера бандла
-    // Разделяем код на чанки для оптимизации загрузки
-    chunkSizeWarningLimit: 500,
-    sourcemap: false
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: true,
+        drop_debugger: true
+      }
+    }
   },
-  plugins: [
-    react(),
-    mode === 'development' &&
-    componentTagger(),
-  ].filter(Boolean),
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  // Настраиваем базовый путь для GitHub Pages
-  base: '/Hdsffd/',
-  // Добавляем оптимизации для более быстрой разработки
   optimizeDeps: {
-    include: ['react', 'react-dom', 'react-router-dom'],
-    esbuildOptions: {
-      target: 'es2020',
-    }
-  },
-}));
+    include: ['react', 'react-dom'],
+    exclude: []
+  }
+});

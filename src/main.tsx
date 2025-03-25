@@ -1,14 +1,16 @@
 import React from 'react'
-import './index.css'
+import ReactDOM from 'react-dom/client'
+import App from './App'
+import './styles/main.css'
 
 // Improved rendering that ensures all elements are loaded before display
-const root = document.getElementById('root')!;
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement
+)
 
 // Create and render the app
-ReactDOM.createRoot(root).render(
+root.render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>,
-);
-
-);
+  </React.StrictMode>
+)
