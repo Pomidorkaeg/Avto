@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   // Настраиваем базовый путь для GitHub Pages
-  base: '/tournament-tables-hub1/',
+  base: '/Hdsffd/',
   // Добавляем оптимизации для более быстрой разработки
   optimizeDeps: {
     include: ['react', 'react-dom', 'react-router-dom'],

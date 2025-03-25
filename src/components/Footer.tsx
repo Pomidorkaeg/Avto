@@ -8,7 +8,7 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           <div>
-            <h3 className="text-xl font-bold mb-4">ФК ГУДАУТ</h3>
+            <h3 className="text-xl font-bold mb-4">ФК ГУДАУТА</h3>
             <p className="text-white/80 mb-4">
               Футбольный клуб с богатой историей и традициями, стремящийся к новым победам и достижениям.
             </p>
@@ -56,13 +56,13 @@ const Footer = () => {
                 <Link to="/tournaments" className="text-white/80 hover:text-white transition-colors duration-300">Кубок России</Link>
               </li>
               <li>
-                <Link to="/tournaments" className="text-white/80 hover:text-white transition-colors duration-300">Чемпионат города Новосибирска</Link>
+                <Link to="/tournaments" className="text-white/80 hover:text-white transition-colors duration-300">Чемпионат Абхазии</Link>
               </li>
               <li>
                 <Link to="/tournaments" className="text-white/80 hover:text-white transition-colors duration-300">Кубок победы</Link>
               </li>
               <li>
-                <Link to="/tournaments" className="text-white/80 hover:text-white transition-colors duration-300">Кубок новосибирской области</Link>
+                <Link to="/tournaments" className="text-white/80 hover:text-white transition-colors duration-300">Кубок Абхазии</Link>
               </li>
             </ul>
           </div>
@@ -72,22 +72,22 @@ const Footer = () => {
             <ul className="space-y-4">
               <li className="flex items-start space-x-3">
                 <MapPin size={20} className="shrink-0 mt-1" />
-                <span className="text-white/80">Новосибирск, ул. Спортивная, 20</span>
+                <span className="text-white/80">Гудаута, ул. Спортивная, 20</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Phone size={20} className="shrink-0" />
-                <span className="text-white/80">+7 (383) 123-45-67</span>
+                <span className="text-white/80">+7 (940) 123-45-67</span>
               </li>
               <li className="flex items-center space-x-3">
                 <Mail size={20} className="shrink-0" />
-                <span className="text-white/80">info@fcsibirsk.ru</span>
+                <span className="text-white/80">info@fcgudauta.com</span>
               </li>
             </ul>
           </div>
         </div>
         
         <div className="border-t border-white/20 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
-          <p className="text-white/80">© {new Date().getFullYear()} ФК Гудаут. Все права защищены.</p>
+          <p className="text-white/80">© {new Date().getFullYear()} ФК Гудаута. Все права защищены.</p>
           <div className="mt-4 md:mt-0">
             <ul className="flex space-x-6">
               <li>

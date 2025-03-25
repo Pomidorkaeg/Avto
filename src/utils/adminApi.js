@@ -1,29 +1,28 @@
+import { collection, doc, getDocs, getDoc, setDoc, deleteDoc, addDoc } from 'firebase/firestore';
 import { db } from '../firebase/config';
-import { 
-  collection, 
-  getDocs, 
-  doc, 
-  getDoc, 
-  setDoc, 
-  updateDoc, 
-  deleteDoc, 
-  addDoc 
-} from 'firebase/firestore';
 
-// Players
+// Получение всех игроков
 export const fetchPlayers = async () => {
   try {
-    const querySnapshot = await getDocs(collection(db, 'players'));
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
+    const playersCollection = collection(db, 'players');
+    const querySnapshot = await getDocs(playersCollection);
+    const players = [];
+    
+    querySnapshot.forEach((doc) => {
+      players.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+    
+    return players;
   } catch (error) {
-    console.error('Error getting players:', error);
-    throw error; // Пробрасываем ошибку для обработки в компоненте
+    console.error('Error fetching players:', error);
+    throw error;
   }
 };
 
+// Получение игрока по ID
 export const getPlayer = async (id) => {
   try {
     const docRef = doc(db, 'players', id);
@@ -43,25 +42,31 @@ export const getPlayer = async (id) => {
   }
 };
 
-// В adminApi.js
-export const updatePlayer = async (playerData) => {
+// Обновление игрока
+export const updatePlayer = async (player) => {
   try {
-    const playerRef = doc(db, 'players', playerData.id);
+    const { id, ...playerData } = player;
+    // Если id не существует, используем setDoc вместо updateDoc
+    if (!id) {
+      throw new Error('Player ID is required for update');
+    }
+    
+    const playerRef = doc(db, 'players', id);
+    // Используем setDoc с merge: true для обеспечения обновления
     await setDoc(playerRef, playerData, { merge: true });
-    toast.success('Игрок обновлен!');
-    return true;
+    
+    console.log('Player updated successfully:', id);
+    return {
+      id,
+      ...playerData
+    };
   } catch (error) {
-    toast.error('Ошибка: ' + error.message);
-    return false;
+    console.error('Error updating player:', error);
+    throw error;
   }
 };
 
-// В AdminPanel.js
-const handleSave = async () => {
-  await updatePlayer(currentPlayer);
-  loadPlayers(); // Автоматически обновляем список
-};
-
+// Удаление игрока
 export const deletePlayer = async (id) => {
   try {
     if (!id) {
@@ -77,68 +82,59 @@ export const deletePlayer = async (id) => {
   }
 };
 
+// Создание нового игрока
 export const createPlayer = async (playerData) => {
   try {
-    // Проверяем, что данные игрока не пустые
-    if (!playerData || Object.keys(playerData).length === 0) {
-      throw new Error('Player data is required');
+    // Проверка наличия обязательных полей
+    if (!playerData.name || !playerData.position || !playerData.number) {
+      throw new Error('Name, position, and number are required fields');
     }
     
-    // Если у игрока уже есть ID, используем setDoc
-    if (playerData.id) {
-      const playerRef = doc(db, 'players', playerData.id);
-      const { id, ...data } = playerData;
-      await setDoc(playerRef, data);
-      console.log('Player created with existing ID:', playerData.id);
-      return playerData;
-    } else {
-      // Иначе используем addDoc для создания нового документа
-      const docRef = await addDoc(collection(db, 'players'), playerData);
-      console.log('Player created with new ID:', docRef.id);
-      return {
-        id: docRef.id,
-        ...playerData
+    // Инициализация stats, если они не предоставлены
+    if (!playerData.stats) {
+      playerData.stats = {
+        goals: 0,
+        assists: 0,
+        games: 0
       };
     }
+    
+    const playersCollection = collection(db, 'players');
+    const docRef = await addDoc(playersCollection, playerData);
+    
+    console.log('Player created successfully with ID:', docRef.id);
+    return {
+      id: docRef.id,
+      ...playerData
+    };
   } catch (error) {
     console.error('Error creating player:', error);
     throw error;
   }
 };
 
-// Coaches
+// Получение всех тренеров
 export const fetchCoaches = async () => {
   try {
-    const querySnapshot = await getDocs(collection(db, 'coaches'));
-    return querySnapshot.docs.map(doc => ({
-      id: doc.id,
-      ...doc.data()
-    }));
-  } catch (error) {
-    console.error('Error getting coaches:', error);
-    throw error;
-  }
-};
-
-export const getCoach = async (id) => {
-  try {
-    const docRef = doc(db, 'coaches', id);
-    const docSnap = await getDoc(docRef);
+    const coachesCollection = collection(db, 'coaches');
+    const querySnapshot = await getDocs(coachesCollection);
+    const coaches = [];
     
-    if (docSnap.exists()) {
-      return {
-        id: docSnap.id,
-        ...docSnap.data()
-      };
-    } else {
-      throw new Error('Coach not found');
-    }
+    querySnapshot.forEach((doc) => {
+      coaches.push({
+        id: doc.id,
+        ...doc.data()
+      });
+    });
+    
+    return coaches;
   } catch (error) {
-    console.error('Error getting coach:', error);
+    console.error('Error fetching coaches:', error);
     throw error;
   }
 };
 
+// Обновление тренера
 export const updateCoach = async (coach) => {
   try {
     const { id, ...coachData } = coach;
@@ -147,7 +143,6 @@ export const updateCoach = async (coach) => {
     }
     
     const coachRef = doc(db, 'coaches', id);
-    // Используем setDoc с merge: true для обеспечения обновления
     await setDoc(coachRef, coachData, { merge: true });
     
     console.log('Coach updated successfully:', id);
@@ -161,6 +156,7 @@ export const updateCoach = async (coach) => {
   }
 };
 
+// Удаление тренера
 export const deleteCoach = async (id) => {
   try {
     if (!id) {
@@ -176,29 +172,22 @@ export const deleteCoach = async (id) => {
   }
 };
 
+// Создание нового тренера
 export const createCoach = async (coachData) => {
   try {
-    // Проверяем, что данные тренера не пустые
-    if (!coachData || Object.keys(coachData).length === 0) {
-      throw new Error('Coach data is required');
+    // Проверка наличия обязательных полей
+    if (!coachData.name || !coachData.role) {
+      throw new Error('Name and role are required fields');
     }
     
-    // Если у тренера уже есть ID, используем setDoc
-    if (coachData.id) {
-      const coachRef = doc(db, 'coaches', coachData.id);
-      const { id, ...data } = coachData;
-      await setDoc(coachRef, data);
-      console.log('Coach created with existing ID:', coachData.id);
-      return coachData;
-    } else {
-      // Иначе используем addDoc для создания нового документа
-      const docRef = await addDoc(collection(db, 'coaches'), coachData);
-      console.log('Coach created with new ID:', docRef.id);
-      return {
-        id: docRef.id,
-        ...coachData
-      };
-    }
+    const coachesCollection = collection(db, 'coaches');
+    const docRef = await addDoc(coachesCollection, coachData);
+    
+    console.log('Coach created successfully with ID:', docRef.id);
+    return {
+      id: docRef.id,
+      ...coachData
+    };
   } catch (error) {
     console.error('Error creating coach:', error);
     throw error;

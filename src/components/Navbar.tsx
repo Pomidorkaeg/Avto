@@ -48,7 +48,7 @@ const Navbar = () => {
               className="flex items-center space-x-2"
               onClick={() => setIsMenuOpen(false)}
             >
-              <span className="text-fc-green font-bold text-xl">ФК ГУДАУТ</span>
+              <span className="text-fc-green font-bold text-xl">ФК ГУДАУТА</span>
             </Link>
           </div>
           

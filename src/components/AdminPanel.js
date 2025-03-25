@@ -11,6 +11,7 @@ import {
 } from '../utils/adminApi';
 import { auth } from '../firebase/config';
 import { signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'firebase/auth';
+import { toast } from 'react-toastify';
 
 const AdminPanel = () => {
   // State management
@@ -47,6 +48,7 @@ const AdminPanel = () => {
       setError('');
     } catch (err) {
       console.error('Error loading players:', err);
+      toast.error('Ошибка загрузки игроков: ' + err.message);
       setError('Ошибка загрузки игроков: ' + err.message);
     } finally {
       setLoading(false);
@@ -61,6 +63,7 @@ const AdminPanel = () => {
       setError('');
     } catch (err) {
       console.error('Error loading coaches:', err);
+      toast.error('Ошибка загрузки тренеров: ' + err.message);
       setError('Ошибка загрузки тренеров: ' + err.message);
     } finally {
       setLoading(false);
@@ -76,12 +79,14 @@ const AdminPanel = () => {
       setEmail('');
       setPassword('');
       setError('');
+      toast.success('Вход выполнен успешно');
       setSuccess('Вход выполнен успешно');
       
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       console.error('Login failed:', err);
+      toast.error('Ошибка входа: ' + err.message);
       setError('Ошибка входа: ' + err.message);
     } finally {
       setLoading(false);
@@ -92,12 +97,14 @@ const AdminPanel = () => {
     try {
       setLoading(true);
       await signOut(auth);
+      toast.success('Выход выполнен успешно');
       setSuccess('Выход выполнен успешно');
       
       // Clear success message after 3 seconds
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       console.error('Logout failed:', err);
+      toast.error('Ошибка выхода: ' + err.message);
       setError('Ошибка выхода: ' + err.message);
     } finally {
       setLoading(false);
@@ -129,6 +136,7 @@ const AdminPanel = () => {
         await loadCoaches();
       }
       
+      toast.success(`${editMode === 'player' ? 'Игрок' : 'Тренер'} успешно обновлен`);
       setSuccess(`${editMode === 'player' ? 'Игрок' : 'Тренер'} успешно обновлен`);
       setEditMode(null);
       setCurrentItem(null);
@@ -137,6 +145,7 @@ const AdminPanel = () => {
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       console.error('Update failed:', err);
+      toast.error('Ошибка обновления: ' + err.message);
       setError('Ошибка обновления: ' + err.message);
     } finally {
       setLoading(false);
@@ -157,12 +166,14 @@ const AdminPanel = () => {
           await loadCoaches();
         }
         
+        toast.success(`${type === 'player' ? 'Игрок' : 'Тренер'} успешно удален`);
         setSuccess(`${type === 'player' ? 'Игрок' : 'Тренер'} успешно удален`);
         
         // Clear success message after 3 seconds
         setTimeout(() => setSuccess(''), 3000);
       } catch (err) {
         console.error('Delete failed:', err);
+        toast.error('Ошибка удаления: ' + err.message);
         setError('Ошибка удаления: ' + err.message);
       } finally {
         setLoading(false);
@@ -224,6 +235,7 @@ const AdminPanel = () => {
         await loadCoaches();
       }
       
+      toast.success(`${editMode === 'newPlayer' ? 'Игрок' : 'Тренер'} успешно создан`);
       setSuccess(`${editMode === 'newPlayer' ? 'Игрок' : 'Тренер'} успешно создан`);
       setEditMode(null);
       setCurrentItem(null);
@@ -232,6 +244,7 @@ const AdminPanel = () => {
       setTimeout(() => setSuccess(''), 3000);
     } catch (err) {
       console.error('Create failed:', err);
+      toast.error('Ошибка создания: ' + err.message);
       setError('Ошибка создания: ' + err.message);
     } finally {
       setLoading(false);

@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель - Редактирование карточек</title>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            color: white;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .section-title {
+            color: #ffd700;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+            color: #333;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card input, .card textarea {
+            width: 100%;
+            margin: 8px 0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .card textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .save-btn {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .delete-btn {
+            background-color: #ff4444;
+            color: white;
+        }
+
+        .add-btn {
+            background-color: #2196F3;
+            color: white;
+            margin: 20px 0;
+        }
+
+        button:hover {
+            opacity: 0.9;
+            transform: scale(1.05);
+        }
+
+        .team-selector {
+            margin-bottom: 10px;
+        }
+
+        .team-selector select {
+            padding: 8px;
+            border-radius: 5px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center; color: #ffd700;">Админ-панель</h1>
+        
+        <button class="add-btn" onclick="addNewCard('player')">Добавить игрока</button>
+        <button class="add-btn" onclick="addNewCard('coach')">Добавить тренера</button>
+
+        <div id="cards"></div>
+        
+        <button class="save-btn" onclick="saveChanges()" style="width: 100%; margin-top: 20px;">
+            Сохранить все изменения
+        </button>
+    </div>
+
+    <script>
+        // Обновленная структура данных с добавлением команд
+        let data = {
+            players: [
+                { id: 1, name: "Игрок 1", role: "Нападающий", description: "Крутой игрок", image: "player1.jpg", team: "goodauta" },
+                { id: 2, name: "Игрок 2", role: "Защитник", description: "Супер защита", image: "player2.jpg", team: "school" }
+            ],
+            coaches: [
+                { id: 1, name: "Тренер 1", role: "Главный тренер", description: "Опытный спец", image: "coach1.jpg", team: "goodauta" }
+            ]
+        };
+
+        function renderCards() {
+            const cardsDiv = document.getElementById("cards");
+            
+            // ФК Гудаута
+            cardsDiv.innerHTML = `
+                <div class="section">
+                    <h2 class="section-title">ФК Гудаута</h2>
+                    <div class="cards-grid" id="goodauta-players"></div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">СШ Гудаута</h2>
+                    <div class="cards-grid" id="school-players"></div>
+                </div>
+                <div class="section">
+                    <h2 class="section-title">Тренерский состав</h2>
+                    <div class="cards-grid" id="coaches"></div>
+                </div>
+            `;
+
+            // Рендерим игроков по командам
+            data.players.forEach(player => {
+                const teamContainer = document.getElementById(`${player.team}-players`);
+                if (teamContainer) {
+                    teamContainer.innerHTML += createCardHTML('player', player);
+                }
+            });
+
+            // Рендерим тренеров
+            const coachesContainer = document.getElementById('coaches');
+            data.coaches.forEach(coach => {
+                coachesContainer.innerHTML += createCardHTML('coach', coach);
+            });
+        }
+
+        function createCardHTML(type, item) {
+            return `
+                <div class="card" data-type="${type}" data-id="${item.id}">
+                    <input type="text" value="${item.name}" data-field="name" placeholder="Имя">
+                    <input type="text" value="${item.role}" data-field="role" placeholder="Роль">
+                    <textarea data-field="description" placeholder="Описание">${item.description}</textarea>
+                    <input type="text" value="${item.image}" data-field="image" placeholder="URL изображения">
+                    <div class="team-selector">
+                        <select data-field="team">
+                            <option value="goodauta" ${item.team === 'goodauta' ? 'selected' : ''}>ФК Гудаута</option>
+                            <option value="school" ${item.team === 'school' ? 'selected' : ''}>СШ Гудаута</option>
+                        </select>
+                    </div>
+                    <div class="button-group">
+                        <button class="delete-btn" onclick="deleteCard('${type}', ${item.id})">Удалить</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function addNewCard(type) {
+            const newId = Math.max(...data[type + 's'].map(item => item.id), 0) + 1;
+            const newItem = {
+                id: newId,
+                name: "",
+                role: "",
+                description: "",
+                image: "",
+                team: "goodauta"
+            };
+            
+            data[type + 's'].push(newItem);
+            renderCards();
+        }
+
+        function saveChanges() {
+            const cards = document.querySelectorAll(".card");
+            cards.forEach(card => {
+                const type = card.dataset.type;
+                const id = parseInt(card.dataset.id);
+                const updatedData = {
+                    id: id,
+                    name: card.querySelector("[data-field='name']").value,
+                    role: card.querySelector("[data-field='role']").value,
+                    description: card.querySelector("[data-field='description']").value,
+                    image: card.querySelector("[data-field='image']").value,
+                    team: card.querySelector("[data-field='team']").value
+                };
+
+                if (type === "player") {
+                    const index = data.players.findIndex(p => p.id === id);
+                    if (index !== -1) {
+                        data.players[index] = updatedData;
+                    }
+                } else if (type === "coach") {
+                    const index = data.coaches.findIndex(c => c.id === id);
+                    if (index !== -1) {
+                        data.coaches[index] = updatedData;
+                    }
+                }
+            });
+
+            // Здесь должен быть код для отправки данных на сервер
+            console.log("Обновленные данные:", data);
+            alert("Изменения сохранены!");
+        }
+
+        function deleteCard(type, id) {
+            if (type === "player") {
+                data.players = data.players.filter(p => p.id !== id);
+            } else if (type === "coach") {
+                data.coaches = data.coaches.filter(c => c.id !== id);
+            }
+            renderCards();
+        }
+
+        // Инициализация
+        renderCards();
+    </script>
+</body>
+</html> 

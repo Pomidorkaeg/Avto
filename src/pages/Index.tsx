@@ -30,21 +30,21 @@ const Index = () => {
   const recentNews = [
     {
       id: '1',
-      title: 'Гудаута одержал победу над Спартаком в матче 3 лиги',
-      excerpt: 'Футбольный клуб Гудаута выиграл со счетом 2:0 в домашнем матче против Спартака.',
+      title: 'ФК Гудаута одержал победу над Динамо в матче 3 лиги',
+      excerpt: 'Футбольный клуб Гудаута выиграл со счетом 2:0 в домашнем матче против Динамо.',
       date: '15.05.2024',
       image: 'https://images.unsplash.com/photo-1489944440615-453fc2b6a9a9?q=80&w=2574&auto=format&fit=crop'
     },
     {
       id: '2',
       title: 'Новый тренер присоединился к команде перед важным матчем',
-      excerpt: 'Иван Петров назначен новым главным тренером Гудаута. Он приступит к обязанностям со следующей недели.',
+      excerpt: 'Иван Петров назначен новым главным тренером ФК Гудаута. Он приступит к обязанностям со следующей недели.',
       date: '10.05.2024',
       image: 'https://images.unsplash.com/photo-1518164147695-36c13dd568f5?q=80&w=2670&auto=format&fit=crop'
     },
     {
       id: '3',
-      title: 'Открыт набор в детскую футбольную школу Гудаута',
+      title: 'Открыт набор в детскую футбольную школу ФК Гудаута',
       excerpt: 'Футбольный клуб Гудаута объявляет о наборе детей в возрасте от 5 до 12 лет в детскую футбольную школу.',
       date: '05.05.2024',
       image: 'https://images.unsplash.com/photo-1517466787929-bc90951d0974?q=80&w=2574&auto=format&fit=crop'
@@ -56,32 +56,32 @@ const Index = () => {
     {
       id: '1',
       tournament: '3 Лига ПФЛ',
-      homeTeam: 'Гудаута',
-      awayTeam: 'Спартак',
+      homeTeam: 'ФК Гудаута',
+      awayTeam: 'Динамо',
       date: '15.05.2024',
       time: '19:00',
-      stadium: 'Стадион Спартак',
-      city: 'Новосибирск'
+      stadium: 'Стадион имени А.П. Соколова',
+      city: 'Гудаута'
     },
     {
       id: '2',
-      tournament: 'Кубок России',
-      homeTeam: 'Гудаута',
-      awayTeam: 'Спартак',
+      tournament: 'Кубок Абхазии',
+      homeTeam: 'ФК Гудаута',
+      awayTeam: 'Рица',
       date: '20.05.2024',
       time: '17:00',
-      stadium: 'Стадион Спартак',
-      city: 'Новосибирск'
+      stadium: 'Стадион имени А.П. Соколова',
+      city: 'Гудаута'
     },
     {
       id: '3',
-      tournament: 'Чемпионат города Новосибирска',
-      homeTeam: 'Гудаута',
-      awayTeam: 'Локомотив',
+      tournament: 'Чемпионат Абхазии',
+      homeTeam: 'ФК Гудаута',
+      awayTeam: 'Нарт',
       date: '25.05.2024',
       time: '16:00',
-      stadium: 'Стадион Локомотив',
-      city: 'Новосибирск'
+      stadium: 'Стадион имени А.П. Соколова',
+      city: 'Гудаута'
     }
   ];
   
@@ -99,16 +99,13 @@ const Index = () => {
               <div>
                 <h2 className="text-3xl font-bold text-gray-900 mb-2">Турниры и соревнования</h2>
                 <p className="text-gray-500 max-w-2xl">
-                  Следите за успехами <span className="team-name">ФК Гудаута</span> в различных турнирах и соревнованиях
+                  Следите за актуальными турнирными таблицами и результатами всех соревнований с участием нашего клуба
                 </p>
               </div>
               
-              <Link
-                to="/tournaments"
-                className="tournament-button flex items-center gap-2 text-lg"
-              >
-                Турнирные таблицы
-                <ArrowRight className="w-5 h-5" />
+              <Link to="/tournaments" className="mt-4 md:mt-0 btn-secondary">
+                Все соревнования
+                <ArrowRight size={18} />
               </Link>
             </div>
             
@@ -238,7 +235,7 @@ const Index = () => {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-70"></div>
                     <div className="absolute bottom-4 left-4 right-4">
                       <div className="flex items-center text-white/90 text-sm mb-1">
-                        <NewspaperIcon size={14} />
+                        <NewspaperIcon size={14} className="mr-2" />
                         <span>{news.date}</span>
                       </div>
                     </div>
@@ -300,7 +297,7 @@ const Index = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <span className="text-white font-medium">Матч с ФК Спартак</span>
+                  <span className="text-white font-medium">Матч с ФК Динамо</span>
                 </div>
               </div>
               
@@ -326,7 +323,7 @@ const Index = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-70 transition-opacity duration-300"></div>
                 <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <span className="text-white font-medium">Стадион Спартак</span>
+                  <span className="text-white font-medium">Стадион имени А.П. Соколова</span>
                 </div>
               </div>
             </div>

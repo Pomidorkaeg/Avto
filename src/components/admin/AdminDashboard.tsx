@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import PlayerManagement from './PlayerManagement';
-import CoachManagement from './CoachManagement';
+import React, { useState } from "react";
+import PlayerManagement from "./PlayerManagement";
+import CoachManagement from "./CoachManagement";
 
 const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState<'players' | 'coaches'>('players');
+  const [activeTab, setActiveTab] = useState<"players" | "coaches">("players");
   const [lastLoginTime] = useState(() => {
-    const time = localStorage.getItem('lastLoginTime');
+    const time = localStorage.getItem("lastLoginTime");
     return time || new Date().toLocaleString();
   });
 
@@ -20,21 +20,21 @@ const AdminDashboard: React.FC = () => {
               </div>
               <div className="hidden sm:ml-6 sm:flex sm:space-x-8">
                 <button
-                  onClick={() => setActiveTab('players')}
+                  onClick={() => setActiveTab("players")}
                   className={`${
-                    activeTab === 'players'
-                      ? 'border-indigo-500 text-gray-900'
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                    activeTab === "players"
+                      ? "border-indigo-500 text-gray-900"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                   } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
                 >
                   Игроки
                 </button>
                 <button
-                  onClick={() => setActiveTab('coaches')}
+                  onClick={() => setActiveTab("coaches")}
                   className={`${
-                    activeTab === 'coaches'
-                      ? 'border-indigo-500 text-gray-900'
-                      : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                    activeTab === "coaches"
+                      ? "border-indigo-500 text-gray-900"
+                      : "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700"
                   } inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium`}
                 >
                   Тренеры
@@ -51,10 +51,10 @@ const AdminDashboard: React.FC = () => {
       </div>
 
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {activeTab === 'players' ? <PlayerManagement /> : <CoachManagement />}
+        {activeTab === "players" ? <PlayerManagement /> : <CoachManagement />}
       </div>
     </div>
   );
 };
 
-export default AdminDashboard; 
+export default AdminDashboard;
